@@ -55,18 +55,22 @@ export function PersonalSearchSection({
           role="dialog"
           aria-modal="true"
           aria-label={`Search ${profile.fullName}'s profile`}
-          className="fixed inset-0 z-50 flex items-start justify-center bg-[#04070E]/82 px-4 pt-16 backdrop-blur-md sm:pt-24"
+          className="fixed inset-0 z-50 flex items-start justify-center bg-[#04050A]/82 px-4 pt-16 backdrop-blur-md sm:pt-24"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.96, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -10 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ type: 'spring', stiffness: 340, damping: 28 }}
             onClick={(event) => event.stopPropagation()}
-            className="w-full max-w-xl overflow-hidden rounded-2xl border border-slate-400/20 bg-[#0D1424] shadow-[0_32px_90px_-24px_rgba(0,0,0,0.95)]"
+            className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-white/[0.12] bg-[#0D111C] shadow-[0_32px_90px_-24px_rgba(0,0,0,0.95)]"
           >
+            <div
+              aria-hidden="true"
+              className="h-[2px] w-full bg-gradient-to-r from-sky-400 via-violet-400 to-emerald-400"
+            />
             {/* Search Input Header */}
-            <div className="relative flex items-center border-b border-slate-400/15 px-4 py-3.5">
+            <div className="relative flex items-center border-b border-white/[0.08] px-4 py-3.5">
               <Search
                 className="h-4 w-4 shrink-0 text-sky-400"
                 aria-hidden="true"
@@ -81,7 +85,7 @@ export function PersonalSearchSection({
                 type="search"
                 value={query}
                 onChange={(event) => onQueryChange(event.target.value)}
-                placeholder="Search Sarthak Basu — Friends Fun SMP, Karate, GitHub, ADK..."
+                placeholder="Search Sarthak — Google, Microsoft, Friends Fun SMP, Karate, GitHub..."
                 className="w-full bg-transparent px-3 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none"
               />
               {query && (
@@ -89,7 +93,7 @@ export function PersonalSearchSection({
                   type="button"
                   onClick={() => onQueryChange('')}
                   aria-label="Clear search query"
-                  className="mr-1 inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-400 hover:bg-slate-800 hover:text-slate-100"
+                  className="mr-1 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-slate-400 hover:bg-white/10 hover:text-slate-100"
                 >
                   <X className="h-3.5 w-3.5" aria-hidden="true" />
                 </button>
@@ -98,7 +102,7 @@ export function PersonalSearchSection({
                 type="button"
                 onClick={onClose}
                 aria-label="Close search"
-                className="rounded-md border border-slate-400/20 bg-[#111B2E] px-2 py-1 font-mono text-[10px] text-slate-400 hover:text-slate-100"
+                className="cursor-pointer rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 font-mono text-[10px] text-slate-400 hover:text-slate-100"
               >
                 ESC
               </button>

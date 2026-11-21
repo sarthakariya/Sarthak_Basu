@@ -1,289 +1,282 @@
 import { useEffect, useState } from 'react';
-import {
-  ArrowUpRight,
-  Award,
-  Expand,
-  Github,
-  Instagram,
-  X,
-} from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
+import { ArrowUpRight, Instagram, Maximize2, X } from 'lucide-react';
+import type { ProfileData } from '../data/profileData';
 import googleDevScreenshot from '../assets/google-dev-profile.png';
 import githubScreenshot from '../assets/github-profile.png';
-import type { ProfileData } from '../data/profileData';
-import { SpotlightIsland } from './SpotlightIsland';
+import {
+  SECTION_STAGGER_VARIANTS,
+  SpotlightIsland,
+  VIEWPORT_CONFIG,
+} from './SpotlightIsland';
 
 interface DeveloperProfilesSectionProps {
   profile: ProfileData;
 }
 
-interface LightboxItem {
+interface LightboxState {
   title: string;
-  subtitle: string;
-  imageSrc: string;
-  imageAlt: string;
-  liveUrl: string;
+  src: string;
+  alt: string;
+  url: string;
 }
 
 export function DeveloperProfilesSection({
   profile,
 }: DeveloperProfilesSectionProps) {
-  const [lightboxItem, setLightboxItem] = useState<LightboxItem | null>(null);
+  const [lightbox, setLightbox] = useState<LightboxState | null>(null);
 
   useEffect(() => {
-    if (!lightboxItem) return;
-    function handleKeyDown(event: KeyboardEvent) {
+    if (!lightbox) return;
+    function onKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
-        setLightboxItem(null);
+        setLightbox(null);
       }
     }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxItem]);
-
-  const showcases: Array<{
-    id: string;
-    testId: string;
-    title: string;
-    domain: string;
-    url: string;
-    imageSrc: string;
-    imageAlt: string;
-    bgHex: string;
-    icon: typeof Award;
-  }> = [
-    {
-      id: 'profile-google-dev',
-      testId: 'google-dev-preview-card',
-      title: 'Google Developers',
-      domain: 'me.developers.google.com/u/mrsarthak',
-      url: profile.googleDev.url,
-      imageSrc: googleDevScreenshot,
-      imageAlt:
-        'Sarthak Basu Google Developers Builders Hub profile showing verified badges and developer credentials',
-      bgHex: '#121212',
-      icon: Award,
-    },
-    {
-      id: 'profile-github',
-      testId: 'github-preview-card',
-      title: 'GitHub',
-      domain: 'github.com/sarthakariya',
-      url: profile.socials.github.url,
-      imageSrc: githubScreenshot,
-      imageAlt:
-        'Sarthak Basu GitHub profile showing pinned repositories, 255 contributions in 2026, and achievements',
-      bgHex: '#0D1117',
-      icon: Github,
-    },
-  ];
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [lightbox]);
 
   return (
-    <section
+    <motion.section
       id="profiles"
       aria-labelledby="profiles-heading"
-      className="scroll-mt-24 space-y-5"
+      variants={SECTION_STAGGER_VARIANTS}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VIEWPORT_CONFIG}
+      className="space-y-4 scroll-mt-20"
     >
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
+      <div className="flex flex-col items-center justify-between gap-1 text-center sm:flex-row sm:text-left">
         <div>
+          <p className="font-mono text-[11px] font-semibold tracking-[0.14em] text-sky-300 uppercase">
+            Verified Profiles
+          </p>
           <h2
             id="profiles-heading"
-            className="font-display text-2xl font-bold tracking-tight text-slate-50"
+            className="mt-1 font-display text-2xl font-bold tracking-tight text-white"
           >
-            Verified Developer Profiles
+            Live Snapshots &amp; Handles
           </h2>
-          <p className="mt-0.5 text-xs text-slate-400">
-            Live snapshots of Sarthak Basu’s Google Builders Hub &amp; GitHub
-            accounts — click any preview to inspect full-size
-          </p>
         </div>
+        <p className="font-mono text-xs text-slate-400">
+          Click any snapshot to zoom full-screen
+        </p>
       </div>
 
-      <div className="space-y-5">
-        {showcases.map((item, idx) => {
-          const Icon = item.icon;
-          return (
-            <SpotlightIsland
-              key={item.id}
-              id={item.id}
-              delay={0.07 * idx}
-              hoverLift
-              className="overflow-hidden"
-            >
-              {/* Crisp Browser Window Header */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-400/12 bg-[#111B2E]/85 px-4 py-3">
-                <div className="flex min-w-0 items-center gap-2.5">
-                  <Icon
-                    className="h-4 w-4 shrink-0 text-sky-400"
-                    aria-hidden="true"
-                  />
-                  <span className="text-sm font-semibold text-slate-100">
-                    {item.title}
-                  </span>
-                  <span className="hidden truncate font-mono text-xs text-slate-400 sm:inline">
-                    {item.domain}
-                  </span>
-                </div>
-
-                <div className="flex shrink-0 items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setLightboxItem({
-                        title: item.title,
-                        subtitle: item.domain,
-                        imageSrc: item.imageSrc,
-                        imageAlt: item.imageAlt,
-                        liveUrl: item.url,
-                      })
-                    }
-                    className="inline-flex min-h-[34px] items-center gap-1.5 rounded-lg border border-slate-400/20 bg-[#0A101E] px-3 py-1.5 text-xs font-medium text-slate-300 transition-colors hover:border-sky-400/45 hover:text-sky-300"
-                  >
-                    <Expand className="h-3.5 w-3.5" aria-hidden="true" />
-                    <span>Zoom</span>
-                  </button>
-
-                  <a
-                    data-testid={item.testId}
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex min-h-[34px] items-center gap-1 rounded-lg bg-sky-400 px-3 py-1.5 text-xs font-semibold text-[#070B14] transition-colors hover:bg-sky-300"
-                  >
-                    <span>Open Live</span>
-                    <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                  </a>
-                </div>
-              </div>
-
-              {/* Click-to-Zoom Full-Width Real Screenshot */}
-              <button
-                type="button"
-                onClick={() =>
-                  setLightboxItem({
-                    title: item.title,
-                    subtitle: item.domain,
-                    imageSrc: item.imageSrc,
-                    imageAlt: item.imageAlt,
-                    liveUrl: item.url,
-                  })
-                }
-                aria-label={`Inspect ${item.title} screenshot full screen`}
-                className="group relative block w-full cursor-zoom-in overflow-hidden text-left focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-sky-400"
-                style={{ backgroundColor: item.bgHex }}
-              >
-                <img
-                  src={item.imageSrc}
-                  alt={item.imageAlt}
-                  referrerPolicy="no-referrer"
-                  className="block h-auto w-full transition-transform duration-300 group-hover:scale-[1.01]"
-                />
-              </button>
-            </SpotlightIsland>
-          );
-        })}
-
-        {/* Sleek Instagram Connect Island */}
-        <SpotlightIsland id="instagram" hoverLift>
-          <a
-            id="social-instagram"
-            data-testid="instagram-live-preview"
-            href={profile.instagramPreview.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-center justify-between gap-4 p-4 sm:px-6 sm:py-4"
-          >
-            <div className="flex min-w-0 items-center gap-3.5">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-400/15 bg-[#111B2E] text-sky-400 transition-colors group-hover:border-sky-400/45">
-                <Instagram className="h-5 w-5" aria-hidden="true" />
-              </div>
-              <div className="min-w-0">
-                <p className="font-display text-base font-semibold text-slate-100">
-                  Instagram
-                </p>
-                <p className="truncate font-mono text-xs text-slate-400">
-                  {profile.instagramPreview.handle} ·{' '}
-                  {profile.socials.instagram.description}
-                </p>
-              </div>
+      {/* Side-by-Side 2-Column Real Screenshot Cards */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {/* 1. Google Developers Snapshot */}
+        <SpotlightIsland
+          id="google-developers"
+          accent="sky"
+          tilt
+          staggerChild
+          className="flex flex-col p-4 sm:p-5 scroll-mt-20"
+        >
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <p className="font-mono text-[10px] font-semibold tracking-[0.14em] text-sky-300 uppercase">
+                Google Builders Hub
+              </p>
+              <h3 className="truncate font-display text-base font-bold text-white sm:text-lg">
+                Google Developers
+              </h3>
             </div>
+            <a
+              href={profile.googleDev.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-sky-400/35 bg-sky-400/10 px-2.5 py-1.5 text-xs font-semibold text-sky-200 transition-colors hover:border-sky-300 hover:bg-sky-400/20"
+            >
+              Open Live
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </a>
+          </div>
 
-            <span className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-sky-400">
-              <span>Open</span>
-              <ArrowUpRight
-                className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                aria-hidden="true"
-              />
+          <button
+            type="button"
+            onClick={() =>
+              setLightbox({
+                title: 'Google Builders Hub — Sarthak Basu',
+                src: googleDevScreenshot,
+                alt: 'Google Builders Hub profile screenshot of Sarthak Basu',
+                url: profile.googleDev.url,
+              })
+            }
+            className="group/shot relative block w-full cursor-zoom-in overflow-hidden rounded-xl border border-white/[0.08] bg-[#06070D] text-left"
+            aria-label="Zoom Google Developers profile screenshot"
+          >
+            <img
+              src={googleDevScreenshot}
+              alt="Google Builders Hub profile of Sarthak Basu showing Firebase Studio, Chrome DevTools, Android SDK, and Google Developer Program badges"
+              loading="lazy"
+              className="block aspect-[16/9] w-full bg-[#06070D] object-contain transition-transform duration-500 ease-out group-hover/shot:scale-[1.02]"
+            />
+            <span className="pointer-events-none absolute right-2.5 bottom-2.5 inline-flex items-center gap-1 rounded-lg border border-white/15 bg-[#06070D]/85 px-2.5 py-1 font-mono text-[10px] font-medium text-slate-200 backdrop-blur-md transition-colors group-hover/shot:border-sky-400/50 group-hover/shot:text-sky-300">
+              <Maximize2 className="h-3 w-3" />
+              Zoom
             </span>
-          </a>
+          </button>
+
+          <p className="mt-2.5 truncate font-mono text-[11px] text-slate-400">
+            {profile.googleDev.handle}
+          </p>
+        </SpotlightIsland>
+
+        {/* 2. GitHub Snapshot */}
+        <SpotlightIsland
+          id="github"
+          accent="violet"
+          tilt
+          staggerChild
+          className="flex flex-col p-4 sm:p-5 scroll-mt-20"
+        >
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <p className="font-mono text-[10px] font-semibold tracking-[0.14em] text-violet-300 uppercase">
+                Code &amp; Contributions
+              </p>
+              <h3 className="truncate font-display text-base font-bold text-white sm:text-lg">
+                GitHub (@{profile.githubUsername})
+              </h3>
+            </div>
+            <a
+              href={profile.socials.github.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-violet-400/35 bg-violet-400/10 px-2.5 py-1.5 text-xs font-semibold text-violet-200 transition-colors hover:border-violet-300 hover:bg-violet-400/20"
+            >
+              Open Live
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </a>
+          </div>
+
+          <button
+            type="button"
+            onClick={() =>
+              setLightbox({
+                title: `GitHub — @${profile.githubUsername}`,
+                src: githubScreenshot,
+                alt: 'GitHub profile screenshot of Sarthak Basu (@sarthakariya)',
+                url: profile.socials.github.url,
+              })
+            }
+            className="group/shot relative block w-full cursor-zoom-in overflow-hidden rounded-xl border border-white/[0.08] bg-[#06070D] text-left"
+            aria-label="Zoom GitHub profile screenshot"
+          >
+            <img
+              src={githubScreenshot}
+              alt="GitHub profile of Sarthak Basu (@sarthakariya) showing pinned repositories and 255 contributions in 2026"
+              loading="lazy"
+              className="block aspect-[16/9] w-full bg-[#06070D] object-contain transition-transform duration-500 ease-out group-hover/shot:scale-[1.02]"
+            />
+            <span className="pointer-events-none absolute right-2.5 bottom-2.5 inline-flex items-center gap-1 rounded-lg border border-white/15 bg-[#06070D]/85 px-2.5 py-1 font-mono text-[10px] font-medium text-slate-200 backdrop-blur-md transition-colors group-hover/shot:border-violet-400/50 group-hover/shot:text-violet-300">
+              <Maximize2 className="h-3 w-3" />
+              Zoom
+            </span>
+          </button>
+
+          <p className="mt-2.5 truncate font-mono text-[11px] text-slate-400">
+            github.com/{profile.githubUsername} · 255+ contributions
+          </p>
         </SpotlightIsland>
       </div>
 
-      {/* Fullscreen High-Resolution Screenshot Lightbox */}
+      {/* Compact Rose/Amber Instagram Connect Strip */}
+      <SpotlightIsland
+        id="instagram-connect"
+        accent="rose"
+        staggerChild
+        className="flex flex-wrap items-center justify-between gap-4 px-5 py-3.5"
+      >
+        <div className="flex items-center gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500/25 via-fuchsia-500/20 to-amber-400/25 text-rose-300 ring-1 ring-rose-400/30">
+            <Instagram className="h-4 w-4" />
+          </span>
+          <div>
+            <p className="text-sm font-semibold text-white">
+              Instagram ·{' '}
+              <span className="font-mono text-rose-300">
+                {profile.instagramPreview.handle}
+              </span>
+            </p>
+            <p className="text-xs text-slate-400">
+              {profile.instagramPreview.bioLines[0]}
+            </p>
+          </div>
+        </div>
+
+        <motion.a
+          href={profile.instagramPreview.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          className="inline-flex items-center gap-1.5 rounded-xl border border-rose-400/35 bg-rose-400/10 px-3.5 py-2 text-xs font-semibold text-rose-200 transition-colors hover:border-rose-300 hover:bg-rose-400/20"
+        >
+          Open Instagram
+          <ArrowUpRight className="h-3.5 w-3.5" />
+        </motion.a>
+      </SpotlightIsland>
+
+      {/* Fullscreen Animated Lightbox */}
       <AnimatePresence>
-        {lightboxItem && (
+        {lightbox && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
-            onClick={() => setLightboxItem(null)}
+            onClick={() => setLightbox(null)}
             role="dialog"
             aria-modal="true"
-            aria-label={`${lightboxItem.title} full screen preview`}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#04070E]/90 p-4 backdrop-blur-md sm:p-8"
+            aria-label={lightbox.title}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-md sm:p-8"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 12 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 12 }}
-              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              exit={{ opacity: 0, scale: 0.96, y: 8 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 28 }}
               onClick={(event) => event.stopPropagation()}
-              className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-slate-400/20 bg-[#0D1424] shadow-2xl"
+              className="relative max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-2xl border border-white/15 bg-[#0D111C] shadow-2xl"
             >
-              <div className="flex items-center justify-between gap-4 border-b border-slate-400/15 px-5 py-3.5">
-                <div className="min-w-0">
-                  <p className="font-display text-base font-semibold text-slate-50">
-                    {lightboxItem.title}
-                  </p>
-                  <p className="truncate font-mono text-xs text-slate-400">
-                    {lightboxItem.subtitle}
-                  </p>
-                </div>
-
-                <div className="flex shrink-0 items-center gap-2">
+              <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
+                <p className="truncate font-display text-sm font-semibold text-white">
+                  {lightbox.title}
+                </p>
+                <div className="flex items-center gap-2">
                   <a
-                    href={lightboxItem.liveUrl}
+                    href={lightbox.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-[36px] items-center gap-1.5 rounded-lg bg-sky-400 px-3.5 py-1.5 text-xs font-semibold text-[#070B14] transition-colors hover:bg-sky-300"
+                    className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-sky-400 to-violet-400 px-3 py-1.5 text-xs font-bold text-[#06070D]"
                   >
-                    <span>Open Live</span>
-                    <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    Visit Page
+                    <ArrowUpRight className="h-3.5 w-3.5" />
                   </a>
                   <button
                     type="button"
-                    onClick={() => setLightboxItem(null)}
-                    aria-label="Close preview"
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-400/20 bg-[#111B2E] text-slate-200 transition-colors hover:border-sky-400/45 hover:text-white"
+                    onClick={() => setLightbox(null)}
+                    aria-label="Close fullscreen preview"
+                    className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
                   >
-                    <X className="h-4 w-4" aria-hidden="true" />
+                    <X className="h-4 w-4" />
                   </button>
                 </div>
               </div>
-
-              <div className="overflow-auto bg-[#0B0F17] p-3 sm:p-4">
+              <div className="max-h-[calc(90vh-56px)] overflow-auto bg-[#06070D] p-2">
                 <img
-                  src={lightboxItem.imageSrc}
-                  alt={lightboxItem.imageAlt}
-                  referrerPolicy="no-referrer"
-                  className="mx-auto h-auto w-full rounded-lg"
+                  src={lightbox.src}
+                  alt={lightbox.alt}
+                  className="mx-auto block h-auto max-w-full rounded-lg"
                 />
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </motion.section>
   );
 }

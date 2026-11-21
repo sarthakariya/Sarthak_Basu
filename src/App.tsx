@@ -4,12 +4,11 @@
  */
 
 import { useEffect, useState } from 'react';
-import { MotionConfig } from 'motion/react';
+import { motion, MotionConfig } from 'motion/react';
 import { PROFILE_DATA } from './data/profileData';
 import type { SearchResultItem } from './utils/personalSearch';
 import { buildPersonSchemaGraph } from './utils/seoSchema';
 import { TopNavBar } from './components/TopNavBar';
-import { ProfileSidebarIsland } from './components/ProfileSidebarIsland';
 import { HeroSection } from './components/HeroSection';
 import { AboutNarrativeSection } from './components/AboutNarrativeSection';
 import { CommunityShowcaseSection } from './components/CommunityShowcaseSection';
@@ -18,6 +17,10 @@ import { CertificatesSection } from './components/CertificatesSection';
 import { FaqSection } from './components/FaqSection';
 import { PersonalSearchSection } from './components/PersonalSearchSection';
 import { Footer } from './components/Footer';
+import {
+  SECTION_STAGGER_VARIANTS,
+  VIEWPORT_CONFIG,
+} from './components/SpotlightIsland';
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState<string>(() => {
@@ -32,12 +35,10 @@ export default function App() {
     return Boolean(params.get('q'));
   });
 
-  // Enforce single Midnight Obsidian dark theme class
   useEffect(() => {
     document.documentElement.classList.add('dark');
   }, []);
 
-  // Global ⌘K / Ctrl+K shortcut to open Command Search Modal
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
@@ -49,7 +50,6 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Keep Schema.org JSON-LD & canonical URL synced with live origin
   useEffect(() => {
     const originUrl = window.location.origin + window.location.pathname;
     const schemaGraph = buildPersonSchemaGraph(PROFILE_DATA, originUrl);
@@ -69,7 +69,6 @@ export default function App() {
     canonical.href = originUrl;
   }, []);
 
-  // Sync ?q= parameter cleanly in address bar
   useEffect(() => {
     const url = new URL(window.location.href);
     const trimmed = searchQuery.trim();
@@ -91,10 +90,16 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="min-h-screen bg-[#070B14] bg-[radial-gradient(ellipse_75%_40%_at_50%_0%,rgba(56,189,248,0.12),transparent)] text-[#F1F5F9]">
+      <div className="relative min-h-screen overflow-x-clip bg-[#06070D] text-[#F1F5F9]">
+        {/* Subtle Multi-Color Ambient Aurora Backdrop */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_60%_38%_at_22%_0%,rgba(56,189,248,0.13),transparent_60%),radial-gradient(ellipse_55%_36%_at_78%_8%,rgba(167,139,250,0.13),transparent_60%),radial-gradient(ellipse_50%_32%_at_50%_95%,rgba(52,211,153,0.08),transparent_65%)]"
+        />
+
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-sky-400 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-[#070B14]"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-sky-400 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-[#06070D]"
         >
           Skip to main content
         </a>
@@ -104,24 +109,36 @@ export default function App() {
           onOpenSearch={() => setIsSearchOpen(true)}
         />
 
-        <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 lg:py-10">
-          <div className="grid grid-cols-1 gap-7 lg:grid-cols-12 lg:items-start">
-            {/* Left 4-Column Floating Sticky Profile Sidebar Island */}
-            <div className="lg:col-span-4">
-              <ProfileSidebarIsland profile={PROFILE_DATA} />
-            </div>
+        {/* Perfectly Centered Symmetric Bento Stream */}
+        <main
+          id="main-content"
+          className="mx-auto max-w-5xl space-y-8 px-5 py-7 sm:px-8 sm:py-9"
+        >
+          <HeroSection profile={PROFILE_DATA} />
 
-            {/* Right 8-Column Animated Tech Bento & Island Stream */}
-            <main id="main-content" className="space-y-10 lg:col-span-8">
-              <HeroSection profile={PROFILE_DATA} />
+          {/* Side-by-Side Compact About + Friends Fun SMP Bento Row */}
+          <motion.section
+            aria-label="About and Community"
+            variants={SECTION_STAGGER_VARIANTS}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT_CONFIG}
+            className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-stretch"
+          >
+            <div className="lg:col-span-7">
               <AboutNarrativeSection profile={PROFILE_DATA} />
+            </div>
+            <div className="lg:col-span-5">
               <CommunityShowcaseSection profile={PROFILE_DATA} />
-              <DeveloperProfilesSection profile={PROFILE_DATA} />
-              <CertificatesSection profile={PROFILE_DATA} />
-              <FaqSection profile={PROFILE_DATA} />
-            </main>
-          </div>
-        </div>
+            </div>
+          </motion.section>
+
+          <DeveloperProfilesSection profile={PROFILE_DATA} />
+
+          <CertificatesSection profile={PROFILE_DATA} />
+
+          <FaqSection profile={PROFILE_DATA} />
+        </main>
 
         <Footer profile={PROFILE_DATA} />
 

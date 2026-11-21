@@ -1,57 +1,62 @@
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
+import { ChevronDown } from 'lucide-react';
 import type { ProfileData } from '../data/profileData';
-import { SpotlightIsland } from './SpotlightIsland';
+import {
+  SECTION_STAGGER_VARIANTS,
+  SpotlightIsland,
+  VIEWPORT_CONFIG,
+} from './SpotlightIsland';
 
 interface FaqSectionProps {
   profile: ProfileData;
 }
 
 export function FaqSection({ profile }: FaqSectionProps) {
-  const [openId, setOpenId] = useState<string | null>(
-    profile.faqs[0]?.id ?? null
-  );
+  const [openId, setOpenId] = useState<string | null>(profile.faqs[0]?.id ?? null);
 
   return (
-    <section
+    <motion.section
       id="faq"
       aria-labelledby="faq-heading"
-      className="scroll-mt-24 space-y-4"
+      variants={SECTION_STAGGER_VARIANTS}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VIEWPORT_CONFIG}
+      className="space-y-4 scroll-mt-20"
     >
-      <div>
+      <div className="text-center sm:text-left">
+        <p className="font-mono text-[11px] font-semibold tracking-[0.14em] text-rose-300 uppercase">
+          Quick Q&amp;A
+        </p>
         <h2
           id="faq-heading"
-          className="font-display text-2xl font-bold tracking-tight text-slate-50"
+          className="mt-1 font-display text-2xl font-bold tracking-tight text-white"
         >
-          Frequently Asked Questions
+          About Sarthak
         </h2>
-        <p className="mt-0.5 text-xs text-slate-400">
-          Verified third-person facts about Sarthak Basu’s work, community, and
-          credentials
-        </p>
       </div>
 
-      <SpotlightIsland className="divide-y divide-slate-400/12 overflow-hidden">
+      <SpotlightIsland accent="rose" staggerChild className="divide-y divide-white/[0.08]">
         {profile.faqs.map((faq) => {
           const isOpen = openId === faq.id;
           return (
-            <div key={faq.id} id={faq.id}>
+            <div key={faq.id} id={faq.id} className="px-5 py-3.5 sm:px-6">
               <button
                 type="button"
                 aria-expanded={isOpen}
                 onClick={() => setOpenId(isOpen ? null : faq.id)}
-                className="flex min-h-[56px] w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-slate-800/35 sm:px-6"
+                className="flex w-full cursor-pointer items-center justify-between gap-4 text-left"
               >
-                <span className="font-display text-sm font-semibold text-slate-100 sm:text-base">
+                <span className="font-display text-sm font-semibold text-slate-100 sm:text-[15px]">
                   {faq.question}
                 </span>
                 <motion.span
                   animate={{ rotate: isOpen ? 180 : 0 }}
-                  transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                  className="shrink-0 text-sky-400"
+                  transition={{ type: 'spring', stiffness: 320, damping: 24 }}
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/[0.09] bg-white/[0.03] text-slate-300"
                 >
-                  <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                  <ChevronDown className="h-4 w-4" />
                 </motion.span>
               </button>
 
@@ -61,10 +66,10 @@ export function FaqSection({ profile }: FaqSectionProps) {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
                     className="overflow-hidden"
                   >
-                    <p className="px-5 pb-5 text-sm leading-relaxed text-slate-400 sm:px-6">
+                    <p className="pt-2.5 pr-8 text-xs leading-relaxed text-slate-400 sm:text-[13.5px]">
                       {faq.answer}
                     </p>
                   </motion.div>
@@ -74,6 +79,6 @@ export function FaqSection({ profile }: FaqSectionProps) {
           );
         })}
       </SpotlightIsland>
-    </section>
+    </motion.section>
   );
 }

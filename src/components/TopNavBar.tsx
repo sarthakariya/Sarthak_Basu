@@ -1,118 +1,82 @@
-import { useState } from 'react';
-import { Menu, Search, X } from 'lucide-react';
-import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
+import { motion, useScroll, useSpring } from 'motion/react';
+import { Search } from 'lucide-react';
 
 interface TopNavBarProps {
   fullName: string;
   onOpenSearch: () => void;
 }
 
-const NAV_ITEMS = [
-  { label: 'About', href: '#about' },
-  { label: 'Community', href: '#community' },
-  { label: 'Profiles', href: '#profiles' },
-  { label: 'Certificates', href: '#certificates' },
-  { label: 'FAQ', href: '#faq' },
+const NAV_LINKS = [
+  { href: '#about', label: 'About', hover: 'hover:text-violet-300' },
+  { href: '#community', label: 'Community', hover: 'hover:text-emerald-300' },
+  { href: '#profiles', label: 'Profiles', hover: 'hover:text-sky-300' },
+  { href: '#certificates', label: 'Certificates', hover: 'hover:text-amber-300' },
+  { href: '#faq', label: 'FAQ', hover: 'hover:text-rose-300' },
 ];
 
 export function TopNavBar({ fullName, onOpenSearch }: TopNavBarProps) {
-  const [mobileOpen, setMobileOpen] = useState(false);
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 220,
-    damping: 32,
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 200,
+    damping: 28,
     restDelta: 0.001,
   });
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-400/12 bg-[#070B14]/82 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-8 px-5 sm:px-8">
-        {/* Zone 1: Single-line Display Wordmark */}
+    <motion.header
+      initial={{ opacity: 0.96, y: -12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 260, damping: 26 }}
+      className="sticky top-0 z-40 border-b border-white/[0.08] bg-[#06070D]/80 backdrop-blur-xl"
+    >
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-5 sm:px-8">
         <a
           href="#top"
-          className="font-display shrink-0 text-lg font-bold tracking-tight whitespace-nowrap text-slate-100 transition-colors hover:text-sky-400"
+          className="group flex shrink-0 items-center gap-2.5 text-sm font-bold tracking-tight text-slate-100 transition-colors hover:text-white"
         >
-          {fullName}
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 via-violet-400 to-emerald-400 font-display text-xs font-extrabold text-[#06070D] shadow-[0_0_16px_rgba(167,139,250,0.35)] transition-transform duration-200 group-hover:scale-105">
+            SB
+          </span>
+          <span className="font-display text-[15px]">{fullName}</span>
         </a>
 
-        {/* Zone 2: 5 Concise Single-Line Navigation Links */}
         <nav
           aria-label="Primary navigation"
-          className="hidden items-center gap-7 md:flex"
+          className="hidden items-center gap-6 md:flex"
         >
-          {NAV_ITEMS.map((item) => (
+          {NAV_LINKS.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="relative shrink-0 py-1 text-sm font-medium whitespace-nowrap text-slate-400 transition-colors hover:text-slate-100 after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:origin-left after:scale-x-0 after:bg-sky-400 after:transition-transform after:duration-200 hover:after:scale-x-100"
+              className={`text-[13px] font-medium text-slate-400 transition-colors ${item.hover}`}
             >
               {item.label}
             </a>
           ))}
         </nav>
 
-        {/* Zone 3: Single Primary Action (+ Mobile Menu Trigger on Small Screens) */}
-        <div className="flex shrink-0 items-center gap-2">
-          <button
-            type="button"
-            onClick={onOpenSearch}
-            className="inline-flex min-h-[40px] shrink-0 items-center gap-2 rounded-xl bg-sky-400 px-4 py-2 text-xs font-semibold whitespace-nowrap text-[#070B14] transition-all duration-150 hover:bg-sky-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
-          >
-            <Search className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>Search Profile</span>
-            <kbd className="hidden rounded bg-[#070B14]/15 px-1.5 py-0.5 font-mono text-[10px] font-medium sm:inline">
-              ⌘K
-            </kbd>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setMobileOpen((prev) => !prev)}
-            aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            aria-expanded={mobileOpen}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-400/20 bg-[#0D1424] text-slate-200 transition-colors hover:border-sky-400/40 md:hidden"
-          >
-            {mobileOpen ? (
-              <X className="h-4 w-4" aria-hidden="true" />
-            ) : (
-              <Menu className="h-4 w-4" aria-hidden="true" />
-            )}
-          </button>
-        </div>
+        <motion.button
+          type="button"
+          onClick={onOpenSearch}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          className="inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-lg border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-slate-200 transition-colors hover:border-violet-400/50 hover:bg-violet-400/10 hover:text-white"
+          aria-label="Search Sarthak Basu's profile"
+        >
+          <Search className="h-3.5 w-3.5 text-sky-400" />
+          <span>Search</span>
+          <kbd className="hidden rounded border border-white/10 bg-[#06070D] px-1.5 py-0.5 font-mono text-[10px] text-slate-400 sm:inline-block">
+            ⌘K
+          </kbd>
+        </motion.button>
       </div>
 
-      {/* Scroll Progress Indicator */}
+      {/* Multi-Color Jewel Scroll Progress Bar */}
       <motion.div
-        style={{ scaleX }}
-        className="h-[2px] origin-left bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400"
+        aria-hidden="true"
+        style={{ scaleX: smoothProgress }}
+        className="h-[2px] w-full origin-left bg-gradient-to-r from-sky-400 via-violet-400 via-emerald-400 to-amber-400"
       />
-
-      {/* Mobile Dropdown Navigation */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.nav
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            aria-label="Mobile navigation"
-            className="border-t border-slate-400/12 bg-[#0A101E] px-5 py-3 md:hidden"
-          >
-            <div className="flex flex-col gap-1">
-              {NAV_ITEMS.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800/70 hover:text-sky-400"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-          </motion.nav>
-        )}
-      </AnimatePresence>
-    </header>
+    </motion.header>
   );
 }
