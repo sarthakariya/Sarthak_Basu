@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Replace with your live GitHub Pages or custom domain URL before publishing
+Sitemap: https://sarthakbasu.github.io/sitemap.xml
