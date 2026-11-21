@@ -24,6 +24,9 @@ export function buildPersonSchemaGraph(
   if (profile.socials.googleDev.enabled && profile.socials.googleDev.url) {
     sameAs.push(profile.socials.googleDev.url);
   }
+  if (profile.socials.friendsFun.enabled && profile.socials.friendsFun.url) {
+    sameAs.push(profile.socials.friendsFun.url);
+  }
   if (profile.socials.linkedin.enabled && profile.socials.linkedin.url) {
     sameAs.push(profile.socials.linkedin.url);
   }

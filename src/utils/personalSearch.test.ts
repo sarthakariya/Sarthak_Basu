@@ -58,9 +58,19 @@ test('searchProfile finds Instagram showcase for "ig" and "@mr_the_sarthak"', ()
   );
 });
 
-test('searchProfile finds Minecraft & GTA V gaming card and omits disabled LinkedIn', () => {
-  assert.equal(searchProfile(PROFILE_DATA, 'minecraft').results[0].id, 'about-gaming');
-  assert.equal(searchProfile(PROFILE_DATA, 'gta 5').results[0].id, 'about-gaming');
+test('searchProfile finds Friends Fun SMP community, Karate/Swimming certificates, and omits disabled LinkedIn', () => {
+  assert.equal(
+    searchProfile(PROFILE_DATA, 'friends fun').results[0].id,
+    'community-friends-fun'
+  );
+  assert.equal(
+    searchProfile(PROFILE_DATA, 'karate').results[0].id,
+    'cert-karate'
+  );
+  assert.equal(
+    searchProfile(PROFILE_DATA, 'swimming').results[0].id,
+    'cert-swimming'
+  );
   assert.equal(
     searchProfile(PROFILE_DATA, 'linkedin').results.some(
       (item) => item.id === 'social-linkedin'

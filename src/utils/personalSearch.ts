@@ -2,12 +2,13 @@ import type { ProfileData } from '../data/profileData';
 
 export type SearchResultKind =
   | 'About'
+  | 'Community'
+  | 'Certificates'
   | 'Developer Profile'
   | 'Google Badges'
   | 'Capability'
   | 'Tech Stack'
   | 'Instagram'
-  | 'Gaming'
   | 'Key Detail'
   | 'FAQ'
   | 'Connect';
@@ -63,33 +64,29 @@ const SYNONYM_MAP: Record<string, string[]> = {
   supabase: ['database', 'backend', 'cloud', 'firebase'],
   gcp: ['google cloud platform', 'cloud', 'hosting'],
   netlify: ['hosting', 'github pages', 'cloud'],
-  capcut: ['video editing', 'design', 'media', 'reels'],
-  ui: ['ui/ux', 'frontend', 'micro-animations', 'liquid-glass'],
-  ux: ['ui/ux', 'frontend', 'prototyping', 'editorial'],
+  capcut: ['video editing', 'design', 'media'],
+  ui: ['ui/ux', 'frontend', 'micro-animations'],
+  ux: ['ui/ux', 'frontend', 'prototyping'],
   kolkata: ['location', 'india', 'remote', 'sarthak basu'],
   remote: ['kolkata', 'global', 'collaboration', 'availability'],
-  ig: ['instagram', 'mr_the_sarthak', 'social', 'photos', 'reels'],
+  ig: ['instagram', 'mr_the_sarthak', 'social'],
   insta: ['instagram', 'mr_the_sarthak', 'social'],
-  instagram: ['ig', 'mr_the_sarthak', 'social', 'posts'],
+  instagram: ['ig', 'mr_the_sarthak', 'social'],
   github: ['sarthakariya', 'repos', 'code', 'developer', 'projects'],
   repos: ['github', 'sarthakariya', 'projects', 'code'],
   gdev: ['google', 'badges', 'certificates', 'mrsarthak'],
   google: ['gdev', 'badges', 'certificates', 'mrsarthak', 'gcp'],
   badges: ['google', 'certificates', 'gdev', 'mrsarthak'],
-  certificates: ['google', 'badges', 'gdev', 'mrsarthak'],
-  minecraft: ['gaming', 'gamer', 'discord', 'mc'],
-  mc: ['minecraft', 'gaming', 'gamer'],
-  gta: ['gta v', 'gaming', 'gamer', 'discord'],
-  gta5: ['gta v', 'gaming', 'gamer'],
-  gamer: ['gaming', 'minecraft', 'gta v', 'discord'],
-  gaming: ['gamer', 'minecraft', 'gta v', 'discord'],
-  discord: ['gaming', 'minecraft', 'gta v', 'gamer'],
+  certificates: ['karate', 'swimming', 'class 10', 'google', 'badges'],
+  karate: ['certificates', 'sports', 'martial arts', 'discipline'],
+  swimming: ['certificates', 'sports', 'aquatic', 'athletic'],
+  minecraft: ['friends fun', 'smp', 'community', '10000', 'server'],
+  smp: ['friends fun', 'minecraft', 'community', '10000'],
+  community: ['friends fun', 'smp', 'minecraft', '10000', 'founder'],
   stack: ['tech stack', 'languages', 'frameworks', 'tools'],
   hire: ['contact', 'email', 'connect', 'collaborate', 'remote'],
-  contact: ['email', 'instagram', 'discord', 'connect'],
+  contact: ['email', 'instagram', 'connect'],
   mail: ['email', 'contact', '26sarthakbasu'],
-  communication: ['transferable', 'collaboration', 'about'],
-  deadlines: ['time management', 'transferable', 'about'],
   who: ['sarthak', 'basu', 'about', 'full-stack', 'kolkata'],
 };
 
@@ -150,13 +147,9 @@ export function buildSearchCorpus(profile: ProfileData): SearchDocument[] {
   docs.push({
     id: 'about-story',
     kind: 'About',
-    title: `About ${profile.fullName} — Full-Stack Web & AI Developer (${profile.city}, ${profile.country})`,
+    title: `${profile.fullName} — Full-Stack Web & AI Developer (${profile.city}, ${profile.country})`,
     snippet: profile.about.lead,
-    body: [
-      profile.about.lead,
-      ...profile.about.paragraphs,
-      ...profile.transferablePillars.map((p) => `${p.title} ${p.detail}`),
-    ].join(' '),
+    body: [profile.about.lead, ...profile.about.paragraphs].join(' '),
     keywords: [
       'about',
       'story',
@@ -165,24 +158,51 @@ export function buildSearchCorpus(profile: ProfileData): SearchDocument[] {
       'kolkata',
       'india',
       'remote',
-      'communication',
-      'problem-solving',
-      'time management',
+      'class 12',
       profile.fullName,
     ],
     sectionId: 'about',
-    meta: 'About Me · Kolkata, India',
+    meta: 'Profile · Kolkata, India',
+  });
+
+  docs.push({
+    id: 'community-friends-fun',
+    kind: 'Community',
+    title: `${profile.community.name} — ${profile.community.memberCount} Member Community`,
+    snippet: profile.community.summary,
+    body: [
+      profile.community.name,
+      profile.community.role,
+      profile.community.memberCount,
+      profile.community.url,
+      profile.community.summary,
+      ...profile.community.highlights.map((h) => `${h.title} ${h.detail}`),
+    ].join(' '),
+    keywords: [
+      'friends fun',
+      'friends fun smp',
+      'smp',
+      'minecraft',
+      '10000',
+      '10,000',
+      'community',
+      'founder',
+      'owner',
+      'wixsite',
+    ],
+    sectionId: 'community',
+    meta: 'Founder & Lead Developer · 10,000+ Members',
   });
 
   docs.push({
     id: 'profile-github',
     kind: 'Developer Profile',
-    title: `GitHub Engineering Repositories (${profile.socials.github.handle})`,
-    snippet: `Inspect Sarthak Basu's public engineering repositories and activity at github.com/${profile.githubUsername}.`,
-    body: `${profile.socials.github.url} ${profile.socials.github.handle} ${profile.socials.github.description} live github repos open source`,
+    title: `GitHub Engineering Profile (${profile.socials.github.handle})`,
+    snippet: `Verified GitHub profile showcasing pinned repositories, achievements, and 255+ contributions at github.com/${profile.githubUsername}.`,
+    body: `${profile.socials.github.url} ${profile.socials.github.handle} ${profile.socials.github.description} github repos open source`,
     keywords: ['github', 'sarthakariya', 'repos', 'repositories', 'code', 'projects'],
     sectionId: 'profiles',
-    meta: 'Developer Profile · Live API',
+    meta: 'Verified Profile · GitHub',
   });
 
   docs.push({
@@ -202,14 +222,26 @@ export function buildSearchCorpus(profile: ProfileData): SearchDocument[] {
       'badges',
       'certificates',
       'me.developers.google.com',
-      'g.dev',
       'mrsarthak',
       'gdev',
       'credentials',
     ],
     sectionId: 'profiles',
-    meta: 'Google Developer · mrsarthak',
+    meta: 'Google Builders Hub · u/mrsarthak',
   });
+
+  for (const cert of profile.certificates) {
+    docs.push({
+      id: cert.id,
+      kind: 'Certificates',
+      title: cert.title,
+      snippet: cert.summary,
+      body: `${cert.title} ${cert.issuer} ${cert.categoryLabel} ${cert.summary} ${cert.credentialNote}`,
+      keywords: ['certificate', 'certificates', cert.categoryLabel, cert.title, cert.issuer],
+      sectionId: 'certificates',
+      meta: `Certification · ${cert.categoryLabel}`,
+    });
+  }
 
   for (const skill of profile.skills) {
     docs.push({
@@ -233,21 +265,10 @@ export function buildSearchCorpus(profile: ProfileData): SearchDocument[] {
       snippet: `${group.tools.join(' · ')} — ${group.note}`,
       body: `${group.category} ${group.tools.join(' ')} ${group.note}`,
       keywords: ['tech stack', 'stack', group.category, ...group.tools],
-      sectionId: 'tech-stack',
+      sectionId: 'skills',
       meta: `Technical Stack · ${group.index}`,
     });
   }
-
-  docs.push({
-    id: 'about-gaming',
-    kind: 'Gaming',
-    title: 'Off-Duty Gaming & Discord — Minecraft & GTA V',
-    snippet: `${profile.gaming.discordNote} Games: ${profile.gaming.games.map((g) => g.name).join(' & ')}. Discord: ${profile.gaming.discordHandle}.`,
-    body: `${profile.gaming.tagline} ${profile.gaming.discordHandle} ${profile.gaming.discordNote} ${profile.gaming.games.map((g) => `${g.name} ${g.style}`).join(' ')}`,
-    keywords: ['gaming', 'gamer', 'minecraft', 'gta v', 'gta 5', 'discord', 'mc'],
-    sectionId: 'about',
-    meta: 'Off-Duty · Gaming & Discord',
-  });
 
   if (profile.socials.instagram.enabled) {
     docs.push({
@@ -416,10 +437,11 @@ export function searchProfile(
       const richnessBoost =
         doc.kind === 'Capability' ||
         doc.kind === 'Tech Stack' ||
+        doc.kind === 'Community' ||
+        doc.kind === 'Certificates' ||
         doc.kind === 'Developer Profile' ||
         doc.kind === 'Google Badges' ||
         doc.kind === 'Instagram' ||
-        doc.kind === 'Gaming' ||
         doc.kind === 'About'
           ? 8
           : doc.kind === 'Connect' || doc.kind === 'FAQ'

@@ -1,113 +1,170 @@
 import { useState } from 'react';
-import { Check, Copy, Gamepad2 } from 'lucide-react';
-import type { ProfileData } from '../data/profileData';
+import { AnimatePresence, motion } from 'motion/react';
+import type { ProfileData, SkillCategory } from '../data/profileData';
+import { SpotlightIsland } from './SpotlightIsland';
 
 interface AboutNarrativeSectionProps {
   profile: ProfileData;
 }
 
+type FilterOption = 'All' | SkillCategory;
+
+const STACK_TABS: Array<{ id: FilterOption; label: string }> = [
+  { id: 'All', label: 'All' },
+  { id: 'Full-Stack Web', label: 'Web' },
+  { id: 'AI & Agents', label: 'AI & Agents' },
+  { id: 'Backend & Cloud', label: 'Backend' },
+  { id: 'UI/UX Engineering', label: 'UI/UX' },
+];
+
 export function AboutNarrativeSection({ profile }: AboutNarrativeSectionProps) {
-  const [discordCopied, setDiscordCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<FilterOption>('All');
 
-  const compactStack = [
-    'Java',
-    'Python',
-    'JavaScript',
-    'Spring Boot',
-    'Gemini API',
-    'ADK',
-    'Firebase',
-    'Supabase',
-    'CapCut',
-  ];
-
-  async function handleCopyDiscord() {
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(profile.gaming.discordHandle);
-      }
-      setDiscordCopied(true);
-      window.setTimeout(() => setDiscordCopied(false), 2000);
-    } catch {
-      setDiscordCopied(true);
-      window.setTimeout(() => setDiscordCopied(false), 2000);
-    }
-  }
+  const visibleSkills =
+    activeTab === 'All'
+      ? profile.skills
+      : profile.skills.filter((skill) => skill.category === activeTab);
 
   return (
     <section
       id="about"
       aria-labelledby="about-heading"
-      className="mx-auto max-w-3xl scroll-mt-16 px-5 py-6 sm:px-6"
+      className="scroll-mt-24 space-y-5"
     >
-      <div className="border-t border-[#DCD0BF] pt-7 dark:border-[#261E19]">
-        <h2
-          id="about-heading"
-          className="text-xs font-medium tracking-wide text-[#7C4A2D] uppercase dark:text-[#C88A55]"
-        >
-          About
-        </h2>
+      {/* Third-Person Biography Island */}
+      <SpotlightIsland className="p-6 sm:p-8">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2
+            id="about-heading"
+            className="font-display text-2xl font-bold tracking-tight text-slate-50"
+          >
+            About Sarthak Basu
+          </h2>
+          <span className="font-mono text-xs text-slate-400">
+            Developer · Founder · Class 12 CS
+          </span>
+        </div>
 
-        <p className="mt-3 text-[15px] leading-relaxed text-[#2C221B] sm:text-base dark:text-[#E5DACD]">
+        <p className="mt-4 text-[15px] leading-relaxed font-medium text-slate-200 sm:text-base">
           {profile.about.lead}
         </p>
-        <p className="mt-2.5 text-sm leading-relaxed text-[#5C4B3E] dark:text-[#B5A595]">
-          {profile.about.paragraphs[0]}
-        </p>
 
-        {/* Compact Stack, Strengths & Gamer row */}
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-12">
-          <div
-            id="tech-stack"
-            className="rounded-xl border border-[#DCD0BF] bg-[#FAF7F2]/85 p-4 sm:col-span-7 dark:border-[#2A211B] dark:bg-[#17120E]"
+        {profile.about.paragraphs.map((paragraph, idx) => (
+          <p
+            key={idx}
+            className="mt-3 text-sm leading-relaxed text-slate-400 sm:text-[15px]"
           >
-            <p className="text-[11px] font-medium tracking-wide text-[#7C4A2D] uppercase dark:text-[#C88A55]">
-              Stack &amp; Strengths
-            </p>
-            <p className="mt-1.5 text-xs leading-relaxed font-medium text-[#1E1611] dark:text-[#EFE6DB]">
-              {compactStack.join(' · ')}
-            </p>
-            <p className="mt-2.5 border-t border-[#E6DDD0] pt-2 text-xs text-[#6B5849] dark:border-[#261E19] dark:text-[#9D8D7E]">
-              {profile.transferablePillars.map((p) => p.title).join(' · ')}
+            {paragraph}
+          </p>
+        ))}
+
+        {/* Clean Unboxed Key Technical Stack Matrix */}
+        <div className="mt-6 grid grid-cols-1 gap-4 border-t border-slate-400/12 pt-5 sm:grid-cols-2">
+          {profile.techStack.map((group) => (
+            <div key={group.id} id={group.id}>
+              <p className="text-xs font-semibold text-sky-400">
+                {group.index}. {group.category}
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-slate-200">
+                {group.tools.join(' · ')}
+              </p>
+            </div>
+          ))}
+        </div>
+      </SpotlightIsland>
+
+      {/* Interactive Filterable Engineering Capabilities Bento */}
+      <div id="skills" className="scroll-mt-24 space-y-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="shrink-0">
+            <h3 className="font-display text-xl font-bold tracking-tight text-slate-100">
+              Engineering Focus
+            </h3>
+            <p className="text-xs text-slate-400">
+              Core systems Sarthak Basu designs, builds, and ships
             </p>
           </div>
 
+          {/* Single-Row Interactive Segmented Filter Bar */}
           <div
-            id="about-gaming"
-            data-testid="compact-gamer-card"
-            className="flex flex-col justify-between rounded-xl border border-[#DCD0BF] bg-[#FAF7F2]/85 p-4 sm:col-span-5 dark:border-[#2A211B] dark:bg-[#17120E]"
+            role="tablist"
+            aria-label="Filter engineering capabilities"
+            className="inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-xl border border-slate-400/15 bg-[#0A101E] p-1"
           >
-            <div className="flex items-center justify-between gap-2">
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-wide text-[#7C4A2D] uppercase dark:text-[#C88A55]">
-                <Gamepad2 className="h-3.5 w-3.5" aria-hidden="true" />
-                <span>Gaming</span>
-              </span>
-              <span className="text-xs font-medium text-[#1E1611] dark:text-[#EFE6DB]">
-                Minecraft · GTA V
-              </span>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleCopyDiscord}
-              className="mt-3 inline-flex min-h-[34px] w-full items-center justify-between rounded-lg border border-[#D4C5B2] bg-[#F5F0E8] px-3 py-1.5 text-xs font-medium text-[#1E1611] transition-colors hover:border-[#7C4A2D] dark:border-[#332821] dark:bg-[#110D0A] dark:text-[#E5DACD] dark:hover:border-[#C88A55]"
-            >
-              <span className="font-mono">
-                {discordCopied
-                  ? 'Copied Discord!'
-                  : `Discord: ${profile.gaming.discordHandle}`}
-              </span>
-              {discordCopied ? (
-                <Check
-                  className="h-3.5 w-3.5 text-[#7C4A2D] dark:text-[#C88A55]"
-                  aria-hidden="true"
-                />
-              ) : (
-                <Copy className="h-3.5 w-3.5 opacity-70" aria-hidden="true" />
-              )}
-            </button>
+            {STACK_TABS.map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`relative min-h-[34px] shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors ${
+                    isActive
+                      ? 'text-[#070B14]'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="active-skill-tab"
+                      transition={{
+                        type: 'spring',
+                        stiffness: 380,
+                        damping: 30,
+                      }}
+                      className="absolute inset-0 rounded-lg bg-sky-400"
+                    />
+                  )}
+                  <span className="relative z-10">{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
+
+        <motion.div
+          layout
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+        >
+          <AnimatePresence mode="popLayout">
+            {visibleSkills.map((skill) => (
+              <motion.div
+                key={skill.id}
+                id={skill.id}
+                layout
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <SpotlightIsland
+                  hoverLift
+                  className="flex h-full flex-col justify-between p-5"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 text-xs">
+                      <span className="font-mono font-medium text-sky-400">
+                        {skill.index} · {skill.category}
+                      </span>
+                    </div>
+                    <h4 className="font-display mt-2.5 text-lg font-semibold text-slate-50">
+                      {skill.title}
+                    </h4>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                      {skill.summary}
+                    </p>
+                  </div>
+
+                  <p className="mt-4 border-t border-slate-400/12 pt-3 font-mono text-[11px] text-slate-300">
+                    {skill.impactMetric}
+                  </p>
+                </SpotlightIsland>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </section>
   );

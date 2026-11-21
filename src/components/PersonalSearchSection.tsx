@@ -1,127 +1,173 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { ArrowUpRight, Search, X } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import type { ProfileData } from '../data/profileData';
 import { searchProfile, type SearchResultItem } from '../utils/personalSearch';
 
 interface PersonalSearchSectionProps {
   profile: ProfileData;
+  isOpen: boolean;
+  onClose: () => void;
   query: string;
   onQueryChange: (value: string) => void;
   onSelectResult: (result: SearchResultItem) => void;
-  inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export function PersonalSearchSection({
   profile,
+  isOpen,
+  onClose,
   query,
   onQueryChange,
   onSelectResult,
-  inputRef,
 }: PersonalSearchSectionProps) {
-  const localRef = useRef<HTMLInputElement | null>(null);
-  const resolvedRef = inputRef ?? localRef;
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const response = useMemo(
-    () => searchProfile(profile, query, 4),
+    () => searchProfile(profile, query, 6),
     [profile, query]
   );
 
   useEffect(() => {
+    if (!isOpen) return;
+    const timer = window.setTimeout(() => inputRef.current?.focus(), 60);
     function handleKeyDown(event: KeyboardEvent) {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-        event.preventDefault();
-        resolvedRef.current?.focus();
-        resolvedRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-        });
+      if (event.key === 'Escape') {
+        onClose();
       }
     }
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [resolvedRef]);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   return (
-    <section
-      id="personal-search"
-      aria-label={`Search ${profile.fullName}'s profile`}
-      className="mx-auto max-w-3xl scroll-mt-16 px-5 py-6 sm:px-6"
-    >
-      <div className="border-t border-[#DCD0BF] pt-7 dark:border-[#261E19]">
-        <label htmlFor="personal-search-input" className="sr-only">
-          Search Sarthak Basu’s profile, stack, GitHub, Google Developers, and Instagram
-        </label>
-        <div className="relative flex items-center">
-          <Search
-            className="pointer-events-none absolute left-3.5 h-4 w-4 text-[#7C4A2D] dark:text-[#C88A55]"
-            aria-hidden="true"
-          />
-          <input
-            ref={resolvedRef}
-            id="personal-search-input"
-            type="search"
-            value={query}
-            onChange={(e) => onQueryChange(e.target.value)}
-            placeholder="Search Sarthak Basu — try 'adk', 'github', 'google', 'instagram', 'minecraft'..."
-            className="w-full rounded-xl border border-[#D4C5B2] bg-[#FAF7F2] py-2.5 pr-16 pl-10 text-sm text-[#1E1611] placeholder:text-[#7D6A5B] transition-colors focus:border-[#7C4A2D] focus:outline-none dark:border-[#2C231D] dark:bg-[#17120E] dark:text-[#F5EDE3] dark:placeholder:text-[#7D6E61] dark:focus:border-[#C88A55]"
-          />
-          <div className="absolute right-2.5 flex items-center">
-            {query ? (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.16 }}
+          onClick={onClose}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Search ${profile.fullName}'s profile`}
+          className="fixed inset-0 z-50 flex items-start justify-center bg-[#04070E]/82 px-4 pt-16 backdrop-blur-md sm:pt-24"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: -10 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            onClick={(event) => event.stopPropagation()}
+            className="w-full max-w-xl overflow-hidden rounded-2xl border border-slate-400/20 bg-[#0D1424] shadow-[0_32px_90px_-24px_rgba(0,0,0,0.95)]"
+          >
+            {/* Search Input Header */}
+            <div className="relative flex items-center border-b border-slate-400/15 px-4 py-3.5">
+              <Search
+                className="h-4 w-4 shrink-0 text-sky-400"
+                aria-hidden="true"
+              />
+              <label htmlFor="personal-search-input" className="sr-only">
+                Search Sarthak Basu’s profile, Friends Fun SMP, certificates,
+                GitHub, and Google Developers
+              </label>
+              <input
+                ref={inputRef}
+                id="personal-search-input"
+                type="search"
+                value={query}
+                onChange={(event) => onQueryChange(event.target.value)}
+                placeholder="Search Sarthak Basu — Friends Fun SMP, Karate, GitHub, ADK..."
+                className="w-full bg-transparent px-3 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => onQueryChange('')}
+                  aria-label="Clear search query"
+                  className="mr-1 inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-400 hover:bg-slate-800 hover:text-slate-100"
+                >
+                  <X className="h-3.5 w-3.5" aria-hidden="true" />
+                </button>
+              )}
               <button
                 type="button"
-                onClick={() => onQueryChange('')}
-                aria-label="Clear search query"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-md text-[#5C4B3E] hover:bg-[#EDE5D8] dark:text-[#B5A595] dark:hover:bg-[#261E19]"
+                onClick={onClose}
+                aria-label="Close search"
+                className="rounded-md border border-slate-400/20 bg-[#111B2E] px-2 py-1 font-mono text-[10px] text-slate-400 hover:text-slate-100"
               >
-                <X className="h-3.5 w-3.5" />
+                ESC
               </button>
-            ) : (
-              <kbd className="hidden rounded border border-[#D4C5B2] px-1.5 py-0.5 font-mono text-[10px] text-[#6B5849] sm:inline-block dark:border-[#332821] dark:text-[#9D8D7E]">
-                ⌘K
-              </kbd>
-            )}
-          </div>
-        </div>
+            </div>
 
-        {/* Live Search Output (only renders when user enters a query) */}
-        {response.normalizedQuery && (
-          <div
-            className="mt-3 rounded-xl border border-[#DCD0BF] bg-[#FAF7F2] p-3.5 dark:border-[#2D241E] dark:bg-[#17120E]"
-            aria-live="polite"
-            data-testid="personal-search-results"
-          >
-            {response.quickAnswer ? (
-              <div className="divide-y divide-[#E6DDD0] dark:divide-[#261E19]">
-                {response.results.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => onSelectResult(item)}
-                    className="group flex w-full items-center justify-between gap-3 py-2.5 text-left first:pt-0 last:pb-0"
-                  >
-                    <div className="min-w-0">
-                      <p className="text-[11px] text-[#7C4A2D] dark:text-[#C88A55]">
-                        {item.meta}
-                      </p>
-                      <p className="truncate text-sm font-semibold text-[#1E1611] group-hover:text-[#7C4A2D] dark:text-[#F5EDE3] dark:group-hover:text-[#C88A55]">
-                        {item.title}
-                      </p>
-                    </div>
-                    <ArrowUpRight
-                      className="h-4 w-4 shrink-0 text-[#7C4A2D] dark:text-[#C88A55]"
-                      aria-hidden="true"
-                    />
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <p className="text-xs text-[#6B5849] dark:text-[#9D8D7E]">
-                No direct match for &ldquo;{response.normalizedQuery}&rdquo;. Try github, google, instagram, adk, or minecraft.
-              </p>
-            )}
-          </div>
-        )}
-      </div>
-    </section>
+            {/* Body: Suggestions or Instant Results */}
+            <div
+              className="max-h-[60vh] overflow-y-auto p-4"
+              aria-live="polite"
+              data-testid="personal-search-results"
+            >
+              {!response.normalizedQuery ? (
+                <div>
+                  <p className="text-xs font-medium text-slate-400">
+                    Quick Jumps
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {profile.suggestedQueries.map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => onQueryChange(suggestion)}
+                        className="min-h-[34px] rounded-lg border border-slate-400/15 bg-[#111B2E] px-3 py-1.5 text-xs font-medium text-slate-200 transition-colors hover:border-sky-400/45 hover:text-sky-300"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : response.quickAnswer ? (
+                <div className="divide-y divide-slate-400/12">
+                  {response.results.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        onSelectResult(item);
+                        onClose();
+                      }}
+                      className="group flex w-full items-center justify-between gap-4 py-3 text-left first:pt-0 last:pb-0"
+                    >
+                      <div className="min-w-0">
+                        <p className="font-mono text-[11px] text-sky-400">
+                          {item.meta}
+                        </p>
+                        <p className="mt-0.5 truncate text-sm font-semibold text-slate-100 group-hover:text-sky-300">
+                          {item.title}
+                        </p>
+                        <p className="mt-0.5 line-clamp-1 text-xs text-slate-400">
+                          {item.snippet}
+                        </p>
+                      </div>
+                      <ArrowUpRight
+                        className="h-4 w-4 shrink-0 text-sky-400 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                        aria-hidden="true"
+                      />
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="py-4 text-center text-xs text-slate-400">
+                  No direct match for &ldquo;{response.normalizedQuery}&rdquo;.
+                  Try Friends Fun SMP, Karate, Swimming, GitHub, Google, or ADK.
+                </p>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

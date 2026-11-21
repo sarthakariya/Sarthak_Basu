@@ -4,8 +4,6 @@ import type { ProfileData } from '../data/profileData';
 
 interface FooterProps {
   profile: ProfileData;
-  isDark: boolean;
-  onToggleTheme: () => void;
 }
 
 export function Footer({ profile }: FooterProps) {
@@ -26,33 +24,35 @@ export function Footer({ profile }: FooterProps) {
   }
 
   return (
-    <footer className="mx-auto max-w-3xl px-5 pt-4 pb-12 sm:px-6">
-      <div className="flex flex-col items-start justify-between gap-4 border-t border-[#DCD0BF] pt-6 text-xs text-[#6B5849] sm:flex-row sm:items-center dark:border-[#261E19] dark:text-[#9D8D7E]">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <span className="font-medium text-[#1E1611] dark:text-[#E5DACD]">
+    <footer className="mx-auto max-w-6xl px-5 pt-6 pb-12 sm:px-8">
+      <div className="flex flex-col items-start justify-between gap-4 border-t border-slate-400/12 pt-6 text-xs text-slate-400 sm:flex-row sm:items-center">
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          <span className="font-semibold text-slate-200">
             © {year} {profile.fullName}
           </span>
           <span aria-hidden="true">·</span>
           <button
             type="button"
             onClick={handleCopy}
-            className="inline-flex items-center gap-1 transition-colors hover:text-[#1E1611] dark:hover:text-[#F5EDE3]"
+            className="inline-flex items-center gap-1.5 transition-colors hover:text-sky-400"
           >
-            <span>{copied ? 'Email copied' : profile.email}</span>
+            <span className="font-mono">
+              {copied ? 'Email copied' : profile.email}
+            </span>
             {copied ? (
-              <Check className="h-3 w-3 text-[#7C4A2D] dark:text-[#C88A55]" aria-hidden="true" />
+              <Check className="h-3.5 w-3.5 text-emerald-400" aria-hidden="true" />
             ) : (
-              <Copy className="h-3 w-3 opacity-70" aria-hidden="true" />
+              <Copy className="h-3.5 w-3.5 opacity-75" aria-hidden="true" />
             )}
           </button>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4 font-medium">
+        <div className="flex flex-wrap items-center gap-5 font-medium">
           <a
             href={profile.socials.github.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="transition-colors hover:text-[#1E1611] dark:hover:text-[#F5EDE3]"
+            className="transition-colors hover:text-sky-400"
           >
             GitHub
           </a>
@@ -60,15 +60,23 @@ export function Footer({ profile }: FooterProps) {
             href={profile.socials.googleDev.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="transition-colors hover:text-[#1E1611] dark:hover:text-[#F5EDE3]"
+            className="transition-colors hover:text-sky-400"
           >
             Google Dev
+          </a>
+          <a
+            href={profile.socials.friendsFun.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-emerald-400"
+          >
+            Friends Fun SMP
           </a>
           <a
             href={profile.socials.instagram.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="transition-colors hover:text-[#1E1611] dark:hover:text-[#F5EDE3]"
+            className="transition-colors hover:text-sky-400"
           >
             Instagram
           </a>
@@ -77,7 +85,7 @@ export function Footer({ profile }: FooterProps) {
               href={profile.socials.linkedin.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="transition-colors hover:text-[#1E1611] dark:hover:text-[#F5EDE3]"
+              className="transition-colors hover:text-sky-400"
             >
               LinkedIn
             </a>
