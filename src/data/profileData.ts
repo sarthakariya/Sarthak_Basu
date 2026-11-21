@@ -152,7 +152,7 @@ export const PROFILE_DATA: ProfileData = {
   location: 'Kolkata, India',
   email: '26sarthakbasu@gmail.com',
   availability: 'Available for remote & global collaboration',
-  portraitUrl: '/assets/aistudio/IMG-20260711-WA0000_c86ea758.jpg',
+  portraitUrl: '/sarthak-basu.jpg',
   portraitAlt: 'Passport portrait of Sarthak Basu',
   profileScreenshots: {
     googleDev: '',

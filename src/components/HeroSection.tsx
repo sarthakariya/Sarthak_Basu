@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Check, Copy, Moon, Search, Sun } from 'lucide-react';
-import { resolvePublicAssetUrl, type ProfileData } from '../data/profileData';
+import portraitPhoto from '../assets/sarthak-basu.jpg';
+import type { ProfileData } from '../data/profileData';
 
 interface HeroSectionProps {
   profile: ProfileData;
@@ -17,7 +18,7 @@ export function HeroSection({
 }: HeroSectionProps) {
   const [portraitFailed, setPortraitFailed] = useState(false);
   const [emailCopied, setEmailCopied] = useState(false);
-  const portraitSrc = resolvePublicAssetUrl(profile.portraitUrl);
+  const portraitSrc = portraitPhoto;
 
   async function handleCopyEmail() {
     try {
