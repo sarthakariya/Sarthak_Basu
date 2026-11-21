@@ -6,10 +6,10 @@ interface HeaderProps {
 }
 
 const NAV_LINKS = [
+  { label: 'Profiles', href: '#profiles' },
   { label: 'About', href: '#about' },
   { label: 'Skills', href: '#skills' },
-  { label: 'Search', href: '#personal-search' },
-  { label: 'Gallery', href: '#gallery' },
+  { label: 'Instagram', href: '#instagram' },
   { label: 'FAQ', href: '#faq' },
 ];
 

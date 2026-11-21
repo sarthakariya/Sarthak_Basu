@@ -59,14 +59,14 @@ export function PersonalSearchSection({
             </h2>
           </div>
           <p className="max-w-md text-sm leading-relaxed text-[#5C4B3E] dark:text-[#BDAE9E]">
-            Query skills, biography perspectives, Instagram, or availability—complete with an instant summary card and deep links.
+            Search my GitHub repos, Google Developer badges, Instagram (@mr_the_sarthak), Class 12 CS skills, or gaming &amp; Discord details.
           </p>
         </div>
 
         {/* Search Input Field */}
         <div className="mt-6">
           <label htmlFor="personal-search-input" className="sr-only">
-            Search Sarthak Basu’s profile, skills, bio, and contact details
+            Search Sarthak Basu’s profile, skills, GitHub, Google badges, and contact details
           </label>
           <div className="relative flex items-center">
             <Search
@@ -79,7 +79,7 @@ export function PersonalSearchSection({
               type="search"
               value={query}
               onChange={(e) => onQueryChange(e.target.value)}
-              placeholder="Try 'communication', 'time management', 'third-person bio', or 'instagram'..."
+              placeholder="Try 'github', 'google badges', 'minecraft', 'gta 5', 'instagram', or 'web dev'..."
               className="w-full rounded-xl border border-[#CFC0AC] bg-[#F5F0E8] py-3.5 pr-24 pl-12 text-base text-[#1E1611] placeholder:text-[#7D6A5B] transition-colors focus:border-[#7C4A2D] focus:bg-[#FFFFFF] focus:outline-none dark:border-[#3D3129] dark:bg-[#14100D] dark:text-[#F4EDE4] dark:placeholder:text-[#8E7D6E] dark:focus:border-[#C88A55] dark:focus:bg-[#1A1410]"
             />
             <div className="absolute right-3 flex items-center gap-2">
@@ -204,14 +204,14 @@ export function PersonalSearchSection({
                   No direct match for &ldquo;{response.normalizedQuery}&rdquo;
                 </p>
                 <p className="mt-2 text-sm text-[#5C4B3E] dark:text-[#BDAE9E]">
-                  Try searching for communication, problem solving, time management, biography, Instagram, or email.
+                  Try searching for github, google badges, web development, minecraft, gta 5, discord, instagram, or communication.
                 </p>
                 <button
                   type="button"
-                  onClick={() => onQueryChange('Communication skills')}
+                  onClick={() => onQueryChange('Google badges')}
                   className="mt-4 inline-flex min-h-[40px] items-center rounded-lg bg-[#EDE5D8] px-4 py-2 text-xs font-semibold text-[#1E1611] transition-colors hover:bg-[#DFD2BE] dark:bg-[#28201A] dark:text-[#F4EDE4] dark:hover:bg-[#352B23]"
                 >
-                  Explore Communication Skills
+                  Explore Google Badges
                 </button>
               </div>
             )}

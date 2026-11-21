@@ -23,6 +23,26 @@ export function Footer({ profile, isDark, onToggleTheme }: FooterProps) {
         </div>
 
         <div className="flex flex-wrap items-center gap-5 text-xs font-medium text-[#5C4B3E] dark:text-[#C2B2A2]">
+          {profile.socials.github.enabled && (
+            <a
+              href={profile.socials.github.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline-offset-4 transition-colors hover:text-[#1E1611] hover:underline dark:hover:text-[#F4EDE4]"
+            >
+              GitHub
+            </a>
+          )}
+          {profile.socials.googleDev.enabled && (
+            <a
+              href={profile.socials.googleDev.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline-offset-4 transition-colors hover:text-[#1E1611] hover:underline dark:hover:text-[#F4EDE4]"
+            >
+              g.dev
+            </a>
+          )}
           {profile.socials.instagram.enabled && (
             <a
               href={profile.socials.instagram.url}

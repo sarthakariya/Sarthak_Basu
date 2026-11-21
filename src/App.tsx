@@ -10,19 +10,19 @@ import { buildPersonSchemaGraph } from './utils/seoSchema';
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
 import { PersonalSearchSection } from './components/PersonalSearchSection';
-import {
-  AboutNarrativeSection,
-  type BioPerspective,
-} from './components/AboutNarrativeSection';
+import { DeveloperProfilesSection } from './components/DeveloperProfilesSection';
+import { AboutNarrativeSection } from './components/AboutNarrativeSection';
 import { SkillsSection } from './components/SkillsSection';
-import { MediaGallerySection } from './components/MediaGallerySection';
+import { InstagramShowcaseSection } from './components/InstagramShowcaseSection';
 import { FaqAndConnectSection } from './components/FaqAndConnectSection';
 import { Footer } from './components/Footer';
 
 export default function App() {
+  // Default to Dark Espresso unless the user explicitly selected Warm Beige light mode
   const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    return window.localStorage.getItem('sarthak-theme') === 'dark';
+    if (typeof window === 'undefined') return true;
+    const saved = window.localStorage.getItem('sarthak-theme');
+    return saved !== 'light';
   });
 
   const [searchQuery, setSearchQuery] = useState<string>(() => {
@@ -31,8 +31,6 @@ export default function App() {
     return params.get('q') ?? '';
   });
 
-  const [bioPerspective, setBioPerspective] =
-    useState<BioPerspective>('firstPerson');
   const [activeSkillCategory, setActiveSkillCategory] = useState<
     SkillCategory | 'All'
   >('All');
@@ -57,7 +55,7 @@ export default function App() {
     }
   }, [isDark]);
 
-  // Keep Schema.org JSON-LD canonical URL & canonical <link> in sync with current origin
+  // Keep Schema.org JSON-LD canonical URL & canonical <link> in sync with live origin
   useEffect(() => {
     const originUrl = window.location.origin + window.location.pathname;
     const schemaGraph = buildPersonSchemaGraph(PROFILE_DATA, originUrl);
@@ -77,7 +75,7 @@ export default function App() {
     canonical.href = originUrl;
   }, []);
 
-  // Sync ?q= parameter cleanly in the address bar without breaking history
+  // Sync ?q= parameter cleanly in address bar
   useEffect(() => {
     const url = new URL(window.location.href);
     const trimmed = searchQuery.trim();
@@ -100,13 +98,7 @@ export default function App() {
   }
 
   function handleSelectSearchResult(result: SearchResultItem) {
-    if (result.sectionId === 'about') {
-      if (result.actionHint === 'third-person') {
-        setBioPerspective('thirdPerson');
-      } else if (result.actionHint === 'first-person') {
-        setBioPerspective('firstPerson');
-      }
-    } else if (result.sectionId === 'skills') {
+    if (result.sectionId === 'skills') {
       setActiveSkillCategory('All');
       setHighlightedSkillId(result.id);
       window.setTimeout(() => setHighlightedSkillId(null), 3500);
@@ -147,11 +139,9 @@ export default function App() {
           inputRef={searchInputRef}
         />
 
-        <AboutNarrativeSection
-          profile={PROFILE_DATA}
-          perspective={bioPerspective}
-          onPerspectiveChange={setBioPerspective}
-        />
+        <DeveloperProfilesSection profile={PROFILE_DATA} />
+
+        <AboutNarrativeSection profile={PROFILE_DATA} />
 
         <SkillsSection
           skills={PROFILE_DATA.skills}
@@ -160,10 +150,7 @@ export default function App() {
           highlightedSkillId={highlightedSkillId}
         />
 
-        <MediaGallerySection
-          media={PROFILE_DATA.media}
-          fullName={PROFILE_DATA.fullName}
-        />
+        <InstagramShowcaseSection profile={PROFILE_DATA} />
 
         <FaqAndConnectSection
           profile={PROFILE_DATA}

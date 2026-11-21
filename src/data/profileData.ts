@@ -1,8 +1,8 @@
 export type SkillCategory =
+  | 'Web Development'
   | 'Communication'
   | 'Problem-Solving'
-  | 'Time Management'
-  | 'Leadership';
+  | 'Time Management';
 
 export interface TransferableSkill {
   id: string;
@@ -21,19 +21,29 @@ export interface KeyDetail {
   context: string;
 }
 
-export interface MediaEntry {
+export type GoogleBadgeCategory = 'Web & Cloud' | 'CS & AI' | 'Certificates';
+
+export interface GoogleBadgeItem {
   id: string;
-  type: 'photo' | 'video';
   title: string;
-  subtitle: string;
-  date: string;
-  category: string;
-  imageUrl: string;
-  /** Optional local or hosted MP4/WebM video file path (e.g. "/media/intro-reel.mp4"). */
-  videoUrl?: string;
-  alt: string;
+  issuer: string;
+  category: GoogleBadgeCategory;
+  summary: string;
+  year: string;
+}
+
+export interface InstagramPost {
+  id: string;
+  category: 'Posts' | 'Tech & Setup' | 'Reels';
+  title: string;
   caption: string;
-  featured?: boolean;
+  date: string;
+  likes: number;
+  imageUrl: string;
+  alt: string;
+  isReel?: boolean;
+  /** Optional local MP4/WebM path (e.g. "/media/my-reel.mp4") */
+  videoUrl?: string;
 }
 
 export interface FaqEntry {
@@ -51,10 +61,22 @@ export interface SocialLinkConfig {
   description: string;
 }
 
+export interface GamingProfile {
+  tagline: string;
+  discordHandle: string;
+  discordNote: string;
+  games: Array<{
+    name: string;
+    style: string;
+  }>;
+}
+
 export interface ProfileData {
   fullName: string;
   givenName: string;
   familyName: string;
+  alternateNames: string[];
+  roleLabel: string;
   headline: string;
   tagline: string;
   location: string;
@@ -67,29 +89,35 @@ export interface ProfileData {
     value: string;
     detail: string;
   }>;
-  bio: {
-    firstPerson: {
-      label: string;
-      audienceNote: string;
-      lead: string;
-      paragraphs: string[];
-    };
-    thirdPerson: {
-      label: string;
-      audienceNote: string;
-      lead: string;
-      paragraphs: string[];
-    };
+  about: {
+    lead: string;
+    paragraphs: string[];
   };
+  gaming: GamingProfile;
   keyDetails: KeyDetail[];
+  googleDev: {
+    handle: string;
+    url: string;
+    headline: string;
+    summary: string;
+    badges: GoogleBadgeItem[];
+  };
+  githubUsername: string;
   skills: TransferableSkill[];
-  media: MediaEntry[];
+  instagramShowcase: {
+    handle: string;
+    displayName: string;
+    bioLines: string[];
+    url: string;
+    posts: InstagramPost[];
+  };
   faqs: FaqEntry[];
   socials: {
     instagram: SocialLinkConfig;
+    github: SocialLinkConfig;
+    googleDev: SocialLinkConfig;
     /** Set enabled: true and add your URL once your LinkedIn profile is created. */
     linkedin: SocialLinkConfig;
-    github: SocialLinkConfig;
   };
   seoKeywords: string[];
   suggestedQueries: string[];
@@ -99,276 +127,341 @@ export const PROFILE_DATA: ProfileData = {
   fullName: 'Sarthak Basu',
   givenName: 'Sarthak',
   familyName: 'Basu',
-  headline: 'Clear communication, calm problem-solving, and disciplined execution.',
+  alternateNames: ['sarthakariya', 'mrsarthak', 'mr_the_sarthak'],
+  roleLabel: 'Class 12 Computer Science · Web & Site Developer',
+  headline: 'Building fast, modern sites — backed by Google Developer badges and a tech-first mindset.',
   tagline:
-    'Official personal profile of Sarthak Basu — bringing structured thinking, persuasive storytelling, and reliable time management to collaborative work.',
-  location: 'India · Open to Global Collaborations',
+    "I'm Sarthak Basu, a Class 12 Computer Science student, web developer, and gamer. I build clean responsive websites, earn Google Developer badges and certificates, and bring strong communication, problem-solving, and time management to every project.",
+  location: 'India · Class 12 Computer Science',
   email: '26sarthakbasu@gmail.com',
-  availability: 'Available for collaborations & inquiries',
-  portraitUrl: '/src/assets/images/hero_editorial_portrait_1795233075752.jpg',
-  portraitAlt: 'Editorial portrait representing Sarthak Basu beside warm travertine architecture',
+  availability: 'Open to web projects, dev collaborations & tech communities',
+  portraitUrl: '/assets/aistudio/IMG-20260711-WA0000_c86ea758.jpg',
+  portraitAlt: 'Portrait of Sarthak Basu wearing a black button-down shirt and brown leather belt',
   heroMetrics: [
     {
-      label: 'Primary Focus',
-      value: 'Communication',
-      detail: 'Stakeholder alignment & clear written and spoken delivery',
+      label: 'Primary Craft',
+      value: 'Site Developer',
+      detail: 'Responsive web interfaces, clean front-end code & SEO-first builds',
     },
     {
-      label: 'Core Method',
-      value: 'Problem-Solving',
-      detail: 'First-principles analysis & structured root-cause clarity',
+      label: 'Credentials',
+      value: 'Google Badges',
+      detail: 'Google Developer profile & certificates at g.dev/mrsarthak',
     },
     {
-      label: 'Execution Rhythm',
-      value: 'Time Management',
-      detail: 'Priority architecture, deep work & dependable deadlines',
+      label: 'Academic Track',
+      value: 'Class 12 CS',
+      detail: 'Computer Science student applying theory to real web projects',
     },
     {
-      label: 'Direct Channel',
-      value: 'Instagram & Email',
-      detail: 'Fast, thoughtful responses for creative & business inquiries',
+      label: 'Off-Duty',
+      value: 'Gamer & Discord',
+      detail: 'Minecraft, GTA V & active community sessions on Discord',
     },
   ],
-  bio: {
-    firstPerson: {
-      label: 'First Person · Personal',
-      audienceNote: 'Written for personal connection, direct introductions, and collaborators.',
-      lead: 'Hi, I am Sarthak Basu. I believe the most meaningful work happens where clear human communication meets disciplined execution.',
-      paragraphs: [
-        'Whether I am breaking down a complex challenge, aligning a group around a shared goal, or organizing competing priorities under a tight timeline, I focus on bringing calm clarity to the room. I care deeply about listening first, asking sharper questions, and turning abstract ideas into concrete, dependable steps.',
-        'Over time, I have built my foundation around transferable skills that hold up in every environment: thoughtful communication, analytical problem-solving, and structured time management. Rather than relying on noise or urgency, I prefer intentional systems that make projects smoother for everyone involved.',
-        'This space is my living personal profile—designed so anyone searching for Sarthak Basu can explore how I think, review my core strengths, browse my visual journal, or use the personal search bar above to find exact answers in seconds.',
-      ],
-    },
-    thirdPerson: {
-      label: 'Third Person · Executive',
-      audienceNote: 'Objective biography formatted for business websites, press kits, and LinkedIn.',
-      lead: 'Sarthak Basu is a communicator, analytical problem-solver, and disciplined executor known for translating complex objectives into clear, on-time outcomes.',
-      paragraphs: [
-        'Grounded in high-impact transferable skills—including strategic communication, structured root-cause problem-solving, and executive time management—Sarthak Basu bridges the gap between vision and reliable delivery. His approach combines active stakeholder listening with practical decision frameworks that reduce friction across teams.',
-        'Committed to continuous learning and operational clarity, Sarthak Basu prioritizes transparent documentation, calm leadership under pressure, and sustainable workflow design. He collaborates effectively across multidisciplinary initiatives where precision, adaptability, and interpersonal trust are essential.',
-        'For professional inquiries, speaking introductions, or collaborative projects, Sarthak Basu can be reached directly via email at 26sarthakbasu@gmail.com or through his official Instagram profile.',
-      ],
-    },
+  about: {
+    lead: "Hi, I'm Sarthak Basu — a Class 12 Computer Science student, site developer, and full-time tech guy who loves turning ideas into live websites.",
+    paragraphs: [
+      'Most importantly, I am a developer. From designing clean, mobile-friendly websites to digging into Computer Science concepts and earning Google Developer badges and certificates, I love learning by actually shipping things people can open in a browser.',
+      'Alongside coding, I focus heavily on the transferable skills that make technical work matter: clear communication so everyone stays aligned, calm analytical problem-solving when code or systems break, and disciplined time management to balance Class 12 academics, dev builds, and personal projects.',
+      "When I step away from VS Code and GitHub, you'll usually find me gaming—building in Minecraft, roaming Los Santos in GTA V, or hanging out with friends on Discord.",
+    ],
+  },
+  gaming: {
+    tagline: 'Off-Duty · Gaming & Discord',
+    discordHandle: 'mr_the_sarthak',
+    discordNote: 'Always down for co-op sessions, server builds, or dev talk on Discord.',
+    games: [
+      {
+        name: 'Minecraft',
+        style: 'Survival, redstone logic & custom server play',
+      },
+      {
+        name: 'GTA V',
+        style: 'Story mode, Online heists & open-world sessions',
+      },
+    ],
   },
   keyDetails: [
     {
-      label: 'Full Name',
-      value: 'Sarthak Basu',
-      context: 'Official spelling for search indexing & attribution',
+      label: 'Identity',
+      value: 'Sarthak Basu · Class 12 CS Student',
+      context: 'Web & site developer and tech enthusiast',
     },
     {
-      label: 'Core Strengths',
+      label: 'Developer Profiles',
+      value: 'github.com/sarthakariya · g.dev/mrsarthak',
+      context: 'Open-source repositories & Google Developer badges',
+    },
+    {
+      label: 'Core Transferable Skills',
       value: 'Communication · Problem-Solving · Time Management',
-      context: 'Cross-industry transferable competencies',
+      context: 'Paired with modern responsive web development',
     },
     {
-      label: 'Working Style',
-      value: 'Structured, Analytical & People-First',
-      context: 'Balances deep-work focus with proactive updates',
-    },
-    {
-      label: 'Direct Contact',
-      value: '26sarthakbasu@gmail.com',
-      context: 'Primary channel for collaborations & opportunities',
+      label: 'Social & Direct',
+      value: '@mr_the_sarthak · 26sarthakbasu@gmail.com',
+      context: 'Instagram showcase, Discord & direct email',
     },
   ],
+  googleDev: {
+    handle: 'g.dev/mrsarthak',
+    url: 'https://g.dev/mrsarthak',
+    headline: 'Google Developer Profile, Badges & Certificates',
+    summary:
+      'Verified learning milestones, hands-on developer pathways, and certificates earned across modern web, cloud, and Computer Science fundamentals.',
+    badges: [
+      {
+        id: 'gbadge-web',
+        title: 'Modern Web & Responsive Site Architecture',
+        issuer: 'Google Developers · g.dev/mrsarthak',
+        category: 'Web & Cloud',
+        summary:
+          'Hands-on pathways focused on fast, accessible, mobile-first websites, Core Web Vitals, and search-friendly semantic markup.',
+        year: '2026',
+      },
+      {
+        id: 'gbadge-cloud',
+        title: 'Google Cloud & Developer Tools Badges',
+        issuer: 'Google Developer Program',
+        category: 'Web & Cloud',
+        summary:
+          'Earned badges across developer workflows, cloud tooling, and modern web deployment pipelines.',
+        year: '2026',
+      },
+      {
+        id: 'gbadge-cs',
+        title: 'Computer Science & Applied Problem-Solving',
+        issuer: 'Google Developer Learning Paths',
+        category: 'CS & AI',
+        summary:
+          'Foundational coding challenges, debugging workflows, and applied AI/developer studio tooling aligned with Class 12 CS.',
+        year: '2026',
+      },
+      {
+        id: 'gbadge-certs',
+        title: 'Verified Developer Certificates',
+        issuer: 'Google · Public Profile Credential',
+        category: 'Certificates',
+        summary:
+          'Completed practical assessments and course certifications showcased on my public Google Developer profile.',
+        year: '2026',
+      },
+    ],
+  },
+  githubUsername: 'sarthakariya',
   skills: [
     {
-      id: 'skill-communication',
+      id: 'skill-web-dev',
       index: '01',
-      category: 'Communication',
-      title: 'Strategic Communication & Stakeholder Alignment',
+      category: 'Web Development',
+      title: 'Web & Site Development',
       summary:
-        'Translating nuanced ideas into crisp, persuasive narratives across written briefs, live presentations, and one-on-one dialogue.',
+        'Designing and coding responsive, fast-loading websites tailored for phones, tablets, and desktops with clean UI structure and SEO best practices.',
       methodology:
-        'Leads with active listening and audience context, structures messages with executive clarity (bottom-line upfront), and closes every discussion with unambiguous next steps.',
-      impactMetric: 'Clarity-first written & verbal delivery',
+        'Builds component-driven interfaces with semantic HTML, modern CSS/Tailwind, TypeScript/React, and GitHub Pages deployment so sites look sharp and rank cleanly.',
+      impactMetric: 'Mobile-first, SEO-structured web builds',
       keywords: [
-        'Strategic Communication',
+        'Site Development',
+        'Web Development',
+        'Responsive Design',
+        'HTML & CSS',
+        'JavaScript & TypeScript',
+        'Technical SEO',
+      ],
+    },
+    {
+      id: 'skill-communication',
+      index: '02',
+      category: 'Communication',
+      title: 'Clear Communication & Collaboration',
+      summary:
+        'Explaining technical ideas in plain language, listening carefully to goals, and keeping teammates, peers, and clients aligned without confusion.',
+      methodology:
+        'Combines concise written updates, thoughtful active listening, and structured walkthroughs across GitHub issues, Discord discussions, and project presentations.',
+      impactMetric: 'Clarity-first technical & team dialogue',
+      keywords: [
+        'Communication Skills',
         'Active Listening',
-        'Executive Presentations',
-        'Stakeholder Alignment',
-        'Persuasive Storytelling',
-        'Written Clarity',
+        'Technical Clarity',
+        'Team Collaboration',
+        'Stakeholder Updates',
+        'Presentation Skills',
       ],
     },
     {
       id: 'skill-problem-solving',
-      index: '02',
+      index: '03',
       category: 'Problem-Solving',
-      title: 'Analytical Problem-Solving & Decision Frameworks',
+      title: 'Analytical Problem-Solving & Debugging',
       summary:
-        'Deconstructing ambiguous challenges into verifiable root causes, evaluating trade-offs objectively, and shipping practical solutions.',
+        'Breaking tough programming bugs, layout glitches, and CS problems into clear root causes and shipping reliable fixes step by step.',
       methodology:
-        'Applies first-principles thinking to separate symptoms from structural bottlenecks, weighs second-order consequences, and documents repeatable playbooks.',
-      impactMetric: 'First-principles root-cause resolution',
+        'Uses first-principles logic from Computer Science to isolate issues systematically, test edge cases cleanly, and turn recurring headaches into repeatable solutions.',
+      impactMetric: 'Methodical root-cause debugging',
       keywords: [
-        'Analytical Problem-Solving',
-        'Critical Thinking',
+        'Problem-Solving',
+        'Analytical Thinking',
+        'Debugging',
+        'Computer Science Logic',
         'Root-Cause Analysis',
         'Systems Thinking',
-        'Decision Frameworks',
-        'Creative Troubleshooting',
       ],
     },
     {
       id: 'skill-time-management',
-      index: '03',
+      index: '04',
       category: 'Time Management',
-      title: 'Time Management & Priority Architecture',
+      title: 'Time Management & Consistent Delivery',
       summary:
-        'Protecting high-leverage work through deliberate scheduling, milestone decomposition, and calm delivery against tight deadlines.',
+        'Balancing Class 12 Computer Science studies, site development projects, Google certification tracks, and downtime without missing deadlines.',
       methodology:
-        'Combines time-blocked deep work with impact-versus-effort prioritization, proactive buffer planning, and transparent progress milestones.',
-      impactMetric: '100% commitment to milestone reliability',
+        'Breaks large builds into focused daily milestones, protects distraction-free coding blocks, and prioritizes high-impact tasks first.',
+      impactMetric: 'Balanced academic & developer execution',
       keywords: [
         'Time Management',
-        'Priority Architecture',
-        'Deep-Work Scheduling',
+        'Priority Planning',
+        'Deep-Work Focus',
         'Deadline Reliability',
-        'Workflow Optimization',
-        'Multi-Project Orchestration',
-      ],
-    },
-    {
-      id: 'skill-leadership',
-      index: '04',
-      category: 'Leadership',
-      title: 'Cross-Functional Collaboration & Adaptability',
-      summary:
-        'Building high-trust momentum across diverse teams while adapting quickly to evolving goals, tools, and feedback.',
-      methodology:
-        'Fosters psychological safety, champions ownership over blame, and bridges technical, creative, and operational viewpoints cleanly.',
-      impactMetric: 'High-trust cross-functional execution',
-      keywords: [
         'Transferable Skills',
-        'Cross-Functional Collaboration',
-        'Adaptability',
-        'Ownership Mindset',
-        'Continuous Learning',
-        'Team Leadership',
+        'Self-Discipline',
       ],
     },
   ],
-  media: [
-    {
-      id: 'media-workspace',
-      type: 'photo',
-      title: 'Quiet Systems & Deep Work',
-      subtitle: 'Editorial Photography · Personal Craft',
-      date: '2026',
-      category: 'Photography',
-      imageUrl: '/src/assets/images/gallery_workspace_craft_1795233075469.jpg',
-      alt: 'Minimalist walnut desk with open journal and espresso in golden afternoon light',
-      caption:
-        'Intentional spaces support clear thinking. Replace this sample editorial frame with your own workspace, portrait, or travel photography inside src/data/profileData.ts.',
-      featured: true,
-    },
-    {
-      id: 'media-dialogue',
-      type: 'photo',
-      title: 'Collaborative Dialogue & Clarity',
-      subtitle: 'Editorial Photography · Communication',
-      date: '2026',
-      category: 'Photography',
-      imageUrl: '/src/assets/images/gallery_communication_talk_1795233075999.jpg',
-      alt: 'Team gathered around a warm travertine studio table during a structured presentation',
-      caption:
-        'Effective communication starts with listening deeply before presenting a structured point of view. Ready to swap with your speaking or event photos.',
-    },
-    {
-      id: 'media-reel',
-      type: 'video',
-      title: 'Introduction & Visual Reel',
-      subtitle: 'Short Film Slot · Ready for Your MP4',
-      date: '2026',
-      category: 'Video Reel',
-      imageUrl: '/src/assets/images/gallery_motion_reel_cover_1795233075424.jpg',
-      videoUrl: '',
-      alt: 'Golden hour architectural colonnade still serving as video reel cover',
-      caption:
-        'Dedicated video reel frame. Drop your personal intro video (MP4/WebM) into /public/media/ and set videoUrl in src/data/profileData.ts to enable instant native playback.',
-    },
-  ],
+  instagramShowcase: {
+    handle: '@mr_the_sarthak',
+    displayName: 'Sarthak Basu',
+    bioLines: [
+      'Class 12 CS · Site & Web Developer',
+      'Google Dev Badges (g.dev/mrsarthak) · Tech & Gaming',
+      'Minecraft · GTA V · Building on GitHub (@sarthakariya)',
+    ],
+    url: 'https://instagram.com/mr_the_sarthak',
+    posts: [
+      {
+        id: 'ig-post-portrait',
+        category: 'Posts',
+        title: 'Classic Black & Warm Tones',
+        caption:
+          'Keeping it sharp and minimal. Building new web projects, leveling up my Class 12 CS game, and earning more Google Developer badges. Follow @mr_the_sarthak for updates.',
+        date: '2026',
+        likes: 128,
+        imageUrl: '/assets/aistudio/IMG-20260711-WA0000_c86ea758.jpg',
+        alt: 'Sarthak Basu portrait in black button-down shirt and brown belt',
+      },
+      {
+        id: 'ig-post-desk',
+        category: 'Tech & Setup',
+        title: 'Late Afternoon Build Session',
+        caption:
+          'Clean space, clear mind. Sketching out responsive layouts, pushing commits to github.com/sarthakariya, and structuring SEO metadata so every project stands out.',
+        date: '2026',
+        likes: 94,
+        imageUrl: '/src/assets/images/gallery_workspace_craft_1795233075469.jpg',
+        alt: 'Minimalist walnut desk with notebook and coffee in warm afternoon sunlight',
+      },
+      {
+        id: 'ig-post-reel',
+        category: 'Reels',
+        title: 'Dev & Gaming Reel Slot',
+        caption:
+          'Behind-the-scenes of coding sites, testing builds, and unwinding with Minecraft & GTA V. Drop your own MP4 reel into /public/media/ and link videoUrl anytime.',
+        date: '2026',
+        likes: 112,
+        imageUrl: '/src/assets/images/gallery_motion_reel_cover_1795233075424.jpg',
+        alt: 'Golden hour architectural colonnade still serving as reel preview',
+        isReel: true,
+        videoUrl: '',
+      },
+    ],
+  },
   faqs: [
     {
       id: 'faq-who',
       question: 'Who is Sarthak Basu?',
       answer:
-        'Sarthak Basu is a communicator, analytical problem-solver, and organized executor who pairs people-first collaboration with structured time management. This website serves as his official, SEO-indexed About Me profile.',
-      keywords: ['who is', 'sarthak basu', 'about', 'identity', 'profile', 'bio'],
+        'I am Sarthak Basu — a Class 12 Computer Science student, web and site developer, tech enthusiast, and gamer. I build modern responsive websites, hold Google Developer badges and certificates (g.dev/mrsarthak), and publish projects on GitHub (sarthakariya).',
+      keywords: ['who is', 'sarthak basu', 'class 12', 'computer science', 'developer', 'student'],
+    },
+    {
+      id: 'faq-profiles',
+      question: 'Where can I check out Sarthak Basu’s GitHub and Google Developer badges?',
+      answer:
+        'You can inspect my live repositories directly on this site or on GitHub at github.com/sarthakariya, and view my Google Developer badges and certificates at g.dev/mrsarthak.',
+      keywords: ['github', 'sarthakariya', 'google', 'badges', 'certificates', 'g.dev', 'mrsarthak'],
     },
     {
       id: 'faq-skills',
-      question: 'What are Sarthak Basu’s core transferable skills?',
+      question: 'What technical and transferable skills does Sarthak Basu bring?',
       answer:
-        'His primary transferable competencies include strategic communication (written clarity, active listening, and presentations), analytical problem-solving (first-principles root-cause analysis), disciplined time management (priority architecture and deadline reliability), and adaptable cross-functional collaboration.',
+        'Alongside web and site development (responsive UI, clean front-end engineering, and technical SEO), I focus on core transferable skills: clear communication, analytical problem-solving, and structured time management.',
       keywords: [
         'skills',
-        'transferable',
+        'web development',
+        'site developer',
         'communication',
         'problem solving',
         'time management',
-        'strengths',
+        'transferable',
       ],
     },
     {
-      id: 'faq-bio-format',
-      question: 'Is there an objective third-person bio of Sarthak Basu for business or LinkedIn use?',
+      id: 'faq-social-gaming',
+      question: 'How can I connect with Sarthak Basu on Instagram, Discord, or Email?',
       answer:
-        'Yes. The Biography section includes a dedicated Third Person (Executive) view with a one-click Copy Bio button specifically written for business websites, speaker introductions, press mentions, and LinkedIn profiles.',
-      keywords: ['third person', 'bio', 'linkedin', 'business', 'press', 'copy'],
-    },
-    {
-      id: 'faq-connect',
-      question: 'How can I connect with Sarthak Basu online?',
-      answer:
-        'You can connect with Sarthak Basu via his Instagram profile or reach out directly by email at 26sarthakbasu@gmail.com. A LinkedIn profile link will also be added directly to this official hub once published.',
-      keywords: ['contact', 'connect', 'instagram', 'email', 'social', 'reach', 'hire'],
+        'Follow me on Instagram at @mr_the_sarthak (featured right inside this site), connect on Discord for Minecraft, GTA V, or dev chats, or reach out directly via email at 26sarthakbasu@gmail.com.',
+      keywords: ['instagram', 'mr_the_sarthak', 'discord', 'minecraft', 'gta 5', 'gaming', 'email', 'contact'],
     },
   ],
   socials: {
     instagram: {
       label: 'Instagram',
-      handle: '@sarthakbasu',
-      url: 'https://instagram.com/sarthakbasu',
+      handle: '@mr_the_sarthak',
+      url: 'https://instagram.com/mr_the_sarthak',
       enabled: true,
-      description: 'Visual moments, creative updates, and direct social connection.',
+      description: 'Personal photos, tech moments & direct social updates.',
+    },
+    github: {
+      label: 'GitHub',
+      handle: '@sarthakariya',
+      url: 'https://github.com/sarthakariya',
+      enabled: true,
+      description: 'Live repositories, web projects & open-source activity.',
+    },
+    googleDev: {
+      label: 'Google Developer',
+      handle: 'g.dev/mrsarthak',
+      url: 'https://g.dev/mrsarthak',
+      enabled: true,
+      description: 'Verified Google Developer badges, learning paths & certificates.',
     },
     linkedin: {
       label: 'LinkedIn',
       handle: 'sarthak-basu',
       url: '',
       enabled: false,
-      description: 'Professional network & career updates (activated when published).',
-    },
-    github: {
-      label: 'GitHub',
-      handle: 'sarthakbasu',
-      url: 'https://github.com/sarthakbasu',
-      enabled: true,
-      description: 'Source repository and open web presence.',
+      description: 'Professional network (activated once published).',
     },
   },
   seoKeywords: [
     'Sarthak Basu',
-    'Strategic Communication',
-    'Analytical Problem-Solving',
+    'Web Developer',
+    'Site Developer',
+    'Class 12 Computer Science',
+    'Google Developer Badges',
+    'github.com/sarthakariya',
+    'g.dev/mrsarthak',
+    '@mr_the_sarthak',
+    'Communication Skills',
+    'Problem-Solving',
     'Time Management',
-    'Transferable Skills',
-    'Stakeholder Alignment',
-    'Priority Architecture',
-    'Cross-Functional Collaboration',
-    'Executive Presence',
-    'Structured Execution',
   ],
   suggestedQueries: [
-    'Communication skills',
-    'Time management',
-    'Problem solving',
-    'Third-person bio',
+    'Web development',
+    'Google badges',
+    'GitHub repos',
     'Instagram',
-    'Contact email',
+    'Minecraft & GTA V',
+    'Communication',
   ],
 };

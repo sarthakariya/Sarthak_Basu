@@ -1,5 +1,13 @@
 import { useState } from 'react';
-import { ArrowDownRight, Instagram, Moon, Search, Sun } from 'lucide-react';
+import {
+  ArrowDownRight,
+  Award,
+  Github,
+  Instagram,
+  Moon,
+  Search,
+  Sun,
+} from 'lucide-react';
 import type { ProfileData } from '../data/profileData';
 
 interface HeroSectionProps {
@@ -25,21 +33,23 @@ export function HeroSection({
     >
       {/* Editorial 2-column balanced split */}
       <div className="grid grid-cols-1 items-stretch gap-10 lg:grid-cols-12 lg:gap-12">
-        {/* Left column: Typographic hierarchy */}
+        {/* Left column: Developer & Google Badges First */}
         <div className="flex flex-col justify-between lg:col-span-7">
           <div>
-            {/* Unboxed editorial metadata line (no pills) */}
+            {/* Unboxed editorial metadata line */}
             <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#DCD0BF] pb-4 text-xs font-medium text-[#6B5849] dark:border-[#342A23] dark:text-[#BDAE9E]">
               <div className="flex flex-wrap items-center gap-2">
-                <span>Official Profile</span>
-                <span aria-hidden="true">·</span>
-                <span>{profile.location}</span>
+                <span>{profile.roleLabel}</span>
               </div>
 
               <button
                 type="button"
                 onClick={onToggleTheme}
-                aria-label={isDark ? 'Switch to Warm Beige light theme' : 'Switch to Deep Espresso dark theme'}
+                aria-label={
+                  isDark
+                    ? 'Switch to Warm Beige light theme'
+                    : 'Switch to Deep Espresso dark theme'
+                }
                 className="-ml-2.5 inline-flex min-h-[36px] shrink-0 items-center gap-2 whitespace-nowrap rounded-md px-2.5 py-1 text-xs font-medium text-[#5C4B3E] transition-colors hover:bg-[#EDE5D8] hover:text-[#1E1611] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7C4A2D] sm:ml-0 dark:text-[#C2B2A2] dark:hover:bg-[#261E19] dark:hover:text-[#F4EDE4]"
               >
                 {isDark ? (
@@ -63,7 +73,7 @@ export function HeroSection({
               {profile.fullName}
             </h1>
 
-            <p className="font-display mt-4 max-w-2xl text-balance text-2xl leading-snug font-medium text-[#5C4B3E] italic sm:text-3xl dark:text-[#D3C3B2]">
+            <p className="font-display mt-4 max-w-2xl text-balance text-2xl leading-snug font-medium text-[#5C4B3E] italic sm:text-3xl dark:text-[#D9C7B4]">
               {profile.headline}
             </p>
 
@@ -73,77 +83,96 @@ export function HeroSection({
 
             {/* Primary & secondary action row */}
             <div className="mt-8 flex flex-wrap items-center gap-3.5">
-              <button
-                type="button"
-                onClick={onFocusSearch}
-                className="inline-flex min-h-[44px] shrink-0 items-center gap-2.5 whitespace-nowrap rounded-lg bg-[#7C4A2D] px-5 py-2.5 text-sm font-semibold text-[#FAF7F2] transition-colors duration-150 hover:bg-[#633820] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7C4A2D] dark:bg-[#C88A55] dark:text-[#14100D] dark:hover:bg-[#D89B66] dark:focus-visible:outline-[#C88A55]"
-              >
-                <Search className="h-4 w-4" aria-hidden="true" />
-                <span>Search About Sarthak</span>
-              </button>
-
               <a
-                href="#about"
-                className="inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap rounded-lg border border-[#CBBBA6] bg-[#FAF7F2] px-5 py-2.5 text-sm font-medium text-[#1E1611] transition-colors duration-150 hover:bg-[#EDE5D8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7C4A2D] dark:border-[#3D3129] dark:bg-[#1E1814] dark:text-[#F4EDE4] dark:hover:bg-[#2A211B]"
+                href="#profiles"
+                className="inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap rounded-lg bg-[#7C4A2D] px-5 py-2.5 text-sm font-semibold text-[#FAF7F2] transition-colors duration-150 hover:bg-[#633820] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7C4A2D] dark:bg-[#C88A55] dark:text-[#14100D] dark:hover:bg-[#D89B66] dark:focus-visible:outline-[#C88A55]"
               >
-                <span>Read Biography</span>
+                <span>GitHub &amp; Google Badges</span>
                 <ArrowDownRight className="h-4 w-4" aria-hidden="true" />
               </a>
 
-              {profile.socials.instagram.enabled && (
-                <a
-                  href={profile.socials.instagram.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap px-3 py-2.5 text-sm font-medium text-[#5C4B3E] underline-offset-4 transition-colors hover:text-[#7C4A2D] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7C4A2D] dark:text-[#C2B2A2] dark:hover:text-[#C88A55]"
-                >
-                  <Instagram className="h-4 w-4" aria-hidden="true" />
-                  <span>{profile.socials.instagram.handle}</span>
-                </a>
-              )}
+              <button
+                type="button"
+                onClick={onFocusSearch}
+                className="inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap rounded-lg border border-[#CBBBA6] bg-[#FAF7F2] px-5 py-2.5 text-sm font-medium text-[#1E1611] transition-colors duration-150 hover:bg-[#EDE5D8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7C4A2D] dark:border-[#3D3129] dark:bg-[#1E1814] dark:text-[#F4EDE4] dark:hover:bg-[#2A211B]"
+              >
+                <Search className="h-4 w-4" aria-hidden="true" />
+                <span>Search Profile</span>
+              </button>
+            </div>
+
+            {/* Direct Verified Identity Links (clean unboxed text row) */}
+            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium text-[#5C4B3E] dark:text-[#C2B2A2]">
+              <a
+                href={profile.socials.github.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-[36px] items-center gap-1.5 underline-offset-4 transition-colors hover:text-[#7C4A2D] hover:underline dark:hover:text-[#C88A55]"
+              >
+                <Github className="h-3.5 w-3.5" aria-hidden="true" />
+                <span>github.com/sarthakariya</span>
+              </a>
+              <a
+                href={profile.socials.googleDev.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-[36px] items-center gap-1.5 underline-offset-4 transition-colors hover:text-[#7C4A2D] hover:underline dark:hover:text-[#C88A55]"
+              >
+                <Award className="h-3.5 w-3.5" aria-hidden="true" />
+                <span>g.dev/mrsarthak</span>
+              </a>
+              <a
+                href={profile.socials.instagram.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-[36px] items-center gap-1.5 underline-offset-4 transition-colors hover:text-[#7C4A2D] hover:underline dark:hover:text-[#C88A55]"
+              >
+                <Instagram className="h-3.5 w-3.5" aria-hidden="true" />
+                <span>{profile.socials.instagram.handle}</span>
+              </a>
             </div>
           </div>
 
-          {/* Subtle editorial attribution note at bottom of left column */}
+          {/* Subtle bottom availability & email line */}
           <div className="mt-10 border-t border-[#DCD0BF] pt-4 text-xs leading-relaxed text-[#6B5849] dark:border-[#342A23] dark:text-[#A99888]">
             <span>{profile.availability}</span>
             <span className="mx-2" aria-hidden="true">·</span>
-            <span>Direct: {profile.email}</span>
+            <span>{profile.email}</span>
           </div>
         </div>
 
-        {/* Right column: Full-height framed editorial portrait */}
+        {/* Right column: Sarthak's real uploaded portrait */}
         <div className="lg:col-span-5">
-          <figure className="relative h-full min-h-[380px] overflow-hidden rounded-2xl border border-[#DCD0BF] bg-[#EAE0D2] dark:border-[#342A23] dark:bg-[#221B16]">
+          <figure className="relative h-full min-h-[400px] overflow-hidden rounded-2xl border border-[#DCD0BF] bg-[#EAE0D2] dark:border-[#342A23] dark:bg-[#221B16]">
             {!portraitFailed ? (
               <img
                 src={profile.portraitUrl}
                 alt={profile.portraitAlt}
                 referrerPolicy="no-referrer"
                 onError={() => setPortraitFailed(true)}
-                className="h-full max-h-[540px] w-full object-cover object-top lg:max-h-none"
+                className="h-full max-h-[560px] w-full object-cover object-top lg:max-h-none"
               />
             ) : (
-              <div className="flex h-full min-h-[420px] flex-col items-center justify-center bg-gradient-to-br from-[#E7DCCB] via-[#D8C7B2] to-[#B79D82] p-8 text-center dark:from-[#2B221C] dark:via-[#1F1814] dark:to-[#14100D]">
-                <span className="font-display text-5xl font-semibold text-[#1E1611] dark:text-[#F4EDE4]">
+              <div className="flex h-full min-h-[420px] flex-col items-center justify-center bg-gradient-to-br from-[#2B221C] via-[#1F1814] to-[#14100D] p-8 text-center">
+                <span className="font-display text-5xl font-semibold text-[#F4EDE4]">
                   SB
                 </span>
-                <span className="mt-2 text-sm text-[#5C4B3E] dark:text-[#C2B2A2]">
+                <span className="mt-2 text-sm text-[#C2B2A2]">
                   {profile.fullName}
                 </span>
               </div>
             )}
 
-            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#14100D]/85 via-[#14100D]/45 to-transparent px-5 pt-12 pb-4 text-[#FAF7F2]">
+            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#14100D]/90 via-[#14100D]/45 to-transparent px-5 pt-14 pb-4 text-[#FAF7F2]">
               <p className="text-xs font-medium tracking-wide text-[#E5D7C6]">
-                {profile.fullName} · Editorial Profile Portrait
+                {profile.fullName} · Class 12 CS &amp; Web Developer
               </p>
             </figcaption>
           </figure>
         </div>
       </div>
 
-      {/* Full-width 4-column Key Focus Strip below hero split */}
+      {/* Full-width 4-column Identity Strip below hero split */}
       <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-[#DCD0BF] bg-[#DCD0BF] sm:grid-cols-2 lg:grid-cols-4 dark:border-[#342A23] dark:bg-[#342A23]">
         {profile.heroMetrics.map((metric, idx) => (
           <div

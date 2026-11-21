@@ -9,10 +9,10 @@ interface SkillsSectionProps {
 
 const CATEGORIES: Array<SkillCategory | 'All'> = [
   'All',
+  'Web Development',
   'Communication',
   'Problem-Solving',
   'Time Management',
-  'Leadership',
 ];
 
 export function SkillsSection({
@@ -36,13 +36,13 @@ export function SkillsSection({
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div>
             <p className="text-xs font-medium text-[#7C4A2D] dark:text-[#C88A55]">
-              02. Core Transferable Competencies
+              03. Technical &amp; Transferable Skills
             </p>
             <h2
               id="skills-heading"
               className="font-display mt-2 text-balance text-4xl font-semibold tracking-tight text-[#1E1611] sm:text-5xl dark:text-[#F4EDE4]"
             >
-              Communication, Problem-Solving &amp; Time Management
+              Site Development, Communication &amp; Execution
             </h2>
           </div>
 

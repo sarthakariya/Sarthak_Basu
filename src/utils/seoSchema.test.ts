@@ -3,8 +3,11 @@ import assert from 'node:assert/strict';
 import { PROFILE_DATA } from '../data/profileData';
 import { buildPersonSchemaGraph } from './seoSchema';
 
-test('buildPersonSchemaGraph generates Person, ProfilePage, WebSite, and FAQPage nodes', () => {
-  const graph = buildPersonSchemaGraph(PROFILE_DATA, 'https://sarthakbasu.github.io');
+test('buildPersonSchemaGraph includes Instagram, GitHub, and g.dev in sameAs and omits disabled LinkedIn', () => {
+  const graph = buildPersonSchemaGraph(
+    PROFILE_DATA,
+    'https://sarthakariya.github.io'
+  );
   assert.equal(graph['@context'], 'https://schema.org');
   const types = graph['@graph'].map((node) => node['@type']);
   assert.deepEqual(types, ['Person', 'ProfilePage', 'WebSite', 'FAQPage']);
@@ -12,10 +15,12 @@ test('buildPersonSchemaGraph generates Person, ProfilePage, WebSite, and FAQPage
   const person = graph['@graph'][0];
   assert.equal(person.name, 'Sarthak Basu');
   assert.equal(person.email, 'mailto:26sarthakbasu@gmail.com');
-  assert.ok(Array.isArray(person.sameAs));
-  assert.ok((person.sameAs as string[]).includes('https://instagram.com/sarthakbasu'));
+  const sameAs = person.sameAs as string[];
+  assert.ok(sameAs.includes('https://instagram.com/mr_the_sarthak'));
+  assert.ok(sameAs.includes('https://github.com/sarthakariya'));
+  assert.ok(sameAs.includes('https://g.dev/mrsarthak'));
   assert.equal(
-    (person.sameAs as string[]).some((url) => url.includes('linkedin')),
+    sameAs.some((url) => url.includes('linkedin')),
     false
   );
 });
@@ -32,7 +37,10 @@ test('buildPersonSchemaGraph includes LinkedIn automatically once enabled', () =
       },
     },
   };
-  const graph = buildPersonSchemaGraph(updated, 'https://sarthakbasu.github.io');
+  const graph = buildPersonSchemaGraph(
+    updated,
+    'https://sarthakariya.github.io'
+  );
   const person = graph['@graph'][0];
   assert.ok(
     (person.sameAs as string[]).includes('https://linkedin.com/in/sarthak-basu')

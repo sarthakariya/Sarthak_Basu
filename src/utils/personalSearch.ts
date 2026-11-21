@@ -1,10 +1,13 @@
 import type { ProfileData } from '../data/profileData';
 
 export type SearchResultKind =
-  | 'Biography'
+  | 'About'
+  | 'Developer Profile'
+  | 'Google Badges'
   | 'Skill'
+  | 'Instagram'
+  | 'Gaming'
   | 'Key Detail'
-  | 'Visual Journal'
   | 'FAQ'
   | 'Connect';
 
@@ -45,32 +48,38 @@ interface SearchDocument {
 }
 
 const SYNONYM_MAP: Record<string, string[]> = {
-  ig: ['instagram', 'social', 'handle', 'photos'],
-  insta: ['instagram', 'social', 'handle'],
-  instagram: ['ig', 'social', 'connect'],
-  linkedin: ['third', 'executive', 'business', 'bio', 'resume'],
-  cv: ['bio', 'third', 'executive', 'skills', 'details'],
-  resume: ['bio', 'third', 'executive', 'skills', 'transferable'],
-  hire: ['contact', 'email', 'connect', 'availability'],
-  contact: ['email', 'instagram', 'connect', 'reach'],
-  reach: ['contact', 'email', 'instagram', 'connect'],
+  ig: ['instagram', 'mr_the_sarthak', 'social', 'photos', 'reels'],
+  insta: ['instagram', 'mr_the_sarthak', 'social'],
+  instagram: ['ig', 'mr_the_sarthak', 'social', 'posts'],
+  github: ['sarthakariya', 'repos', 'code', 'developer', 'projects'],
+  repos: ['github', 'sarthakariya', 'projects', 'code'],
+  code: ['github', 'web', 'site', 'developer', 'computer science'],
+  gdev: ['google', 'badges', 'certificates', 'mrsarthak'],
+  google: ['gdev', 'badges', 'certificates', 'mrsarthak'],
+  badges: ['google', 'certificates', 'gdev', 'mrsarthak'],
+  certificates: ['google', 'badges', 'gdev', 'mrsarthak'],
+  minecraft: ['gaming', 'gamer', 'discord', 'mc'],
+  mc: ['minecraft', 'gaming', 'gamer'],
+  gta: ['gta v', 'gaming', 'gamer', 'discord'],
+  gta5: ['gta v', 'gaming', 'gamer'],
+  gtf: ['gta v', 'gaming', 'gamer'],
+  gamer: ['gaming', 'minecraft', 'gta v', 'discord'],
+  gaming: ['gamer', 'minecraft', 'gta v', 'discord'],
+  discord: ['gaming', 'minecraft', 'gta v', 'gamer'],
+  site: ['web', 'developer', 'website', 'frontend'],
+  web: ['site', 'developer', 'website', 'frontend'],
+  dev: ['developer', 'github', 'google', 'site', 'web'],
+  student: ['class 12', 'computer science', 'cs'],
+  cs: ['computer science', 'class 12', 'developer'],
+  hire: ['contact', 'email', 'connect', 'collaborate'],
+  contact: ['email', 'instagram', 'discord', 'connect'],
   mail: ['email', 'contact', '26sarthakbasu'],
-  speak: ['communication', 'presentations', 'verbal', 'storytelling'],
-  speaking: ['communication', 'presentations', 'stakeholder'],
-  writing: ['communication', 'written', 'clarity'],
-  listen: ['communication', 'listening', 'stakeholder'],
-  debug: ['problem', 'solving', 'root-cause', 'analytical'],
-  analysis: ['analytical', 'problem', 'solving', 'first-principles'],
-  critical: ['problem', 'solving', 'thinking', 'analytical'],
-  deadlines: ['time', 'management', 'priority', 'reliability', 'schedule'],
-  schedule: ['time', 'management', 'deep-work', 'priority'],
-  organize: ['time', 'management', 'workflow', 'priority'],
-  productivity: ['time', 'management', 'deep-work', 'execution'],
-  video: ['reel', 'media', 'gallery', 'visual', 'film'],
-  photos: ['photography', 'gallery', 'visual', 'journal'],
-  photo: ['photography', 'gallery', 'visual'],
-  team: ['collaboration', 'leadership', 'cross-functional'],
-  who: ['sarthak', 'basu', 'about', 'biography', 'profile'],
+  speak: ['communication', 'collaboration', 'presentations'],
+  writing: ['communication', 'clarity'],
+  debug: ['problem', 'solving', 'debugging', 'analytical'],
+  deadlines: ['time', 'management', 'priority', 'reliability'],
+  schedule: ['time', 'management', 'priority'],
+  who: ['sarthak', 'basu', 'about', 'class 12', 'developer'],
 };
 
 const STOP_WORDS = new Set([
@@ -128,43 +137,61 @@ export function buildSearchCorpus(profile: ProfileData): SearchDocument[] {
   const docs: SearchDocument[] = [];
 
   docs.push({
-    id: 'bio-first-person',
-    kind: 'Biography',
-    title: 'First-Person Story (Personal Voice)',
-    snippet: profile.bio.firstPerson.lead,
-    body: [profile.bio.firstPerson.lead, ...profile.bio.firstPerson.paragraphs].join(' '),
+    id: 'about-story',
+    kind: 'About',
+    title: `About ${profile.fullName} — Class 12 CS & Site Developer`,
+    snippet: profile.about.lead,
+    body: [profile.about.lead, ...profile.about.paragraphs].join(' '),
     keywords: [
-      'first person',
-      'personal',
+      'about',
       'story',
-      'about me',
+      'class 12',
+      'computer science',
+      'cs',
+      'developer',
+      'site developer',
+      'tech guy',
       profile.fullName,
-      'introduction',
     ],
     sectionId: 'about',
-    meta: 'Biography · First Person',
-    actionHint: 'first-person',
+    meta: 'About Me · First Person',
   });
 
   docs.push({
-    id: 'bio-third-person',
-    kind: 'Biography',
-    title: 'Objective Third-Person Bio (Business & LinkedIn)',
-    snippet: profile.bio.thirdPerson.lead,
-    body: [profile.bio.thirdPerson.lead, ...profile.bio.thirdPerson.paragraphs].join(' '),
-    keywords: [
-      'third person',
-      'executive',
-      'objective',
-      'business',
-      'linkedin',
-      'press',
-      'bio',
-      profile.fullName,
-    ],
+    id: 'profile-github',
+    kind: 'Developer Profile',
+    title: `GitHub Live Repositories (${profile.socials.github.handle})`,
+    snippet: `Inspect Sarthak Basu's live public repositories, code, and activity at github.com/${profile.githubUsername}.`,
+    body: `${profile.socials.github.url} ${profile.socials.github.handle} ${profile.socials.github.description} live github repos open source web developer`,
+    keywords: ['github', 'sarthakariya', 'repos', 'repositories', 'code', 'projects'],
+    sectionId: 'profiles',
+    meta: 'Developer Profile · Live API',
+  });
+
+  docs.push({
+    id: 'profile-google-dev',
+    kind: 'Google Badges',
+    title: `${profile.googleDev.headline} (${profile.googleDev.handle})`,
+    snippet: profile.googleDev.summary,
+    body: [
+      profile.googleDev.handle,
+      profile.googleDev.summary,
+      ...profile.googleDev.badges.map((b) => `${b.title} ${b.summary} ${b.category}`),
+    ].join(' '),
+    keywords: ['google', 'badges', 'certificates', 'g.dev', 'mrsarthak', 'gdev', 'credentials'],
+    sectionId: 'profiles',
+    meta: 'Google Developer · g.dev/mrsarthak',
+  });
+
+  docs.push({
+    id: 'about-gaming',
+    kind: 'Gaming',
+    title: 'Gaming & Discord — Minecraft & GTA V',
+    snippet: `${profile.gaming.discordNote} Games: ${profile.gaming.games.map((g) => g.name).join(' & ')}. Discord: ${profile.gaming.discordHandle}.`,
+    body: `${profile.gaming.tagline} ${profile.gaming.discordHandle} ${profile.gaming.discordNote} ${profile.gaming.games.map((g) => `${g.name} ${g.style}`).join(' ')}`,
+    keywords: ['gaming', 'gamer', 'minecraft', 'gta v', 'gta 5', 'gtf 5', 'discord', 'mc'],
     sectionId: 'about',
-    meta: 'Biography · Third Person',
-    actionHint: 'third-person',
+    meta: 'Off-Duty · Gaming & Discord',
   });
 
   for (const skill of profile.skills) {
@@ -176,8 +203,30 @@ export function buildSearchCorpus(profile: ProfileData): SearchDocument[] {
       body: `${skill.summary} ${skill.methodology} ${skill.impactMetric}`,
       keywords: [skill.category, ...skill.keywords, 'transferable skills'],
       sectionId: 'skills',
-      meta: `Transferable Skill · ${skill.category}`,
+      meta: `Core Skill · ${skill.category}`,
       actionHint: skill.category,
+    });
+  }
+
+  if (profile.socials.instagram.enabled) {
+    docs.push({
+      id: 'social-instagram',
+      kind: 'Instagram',
+      title: `Instagram Profile Showcase (${profile.socials.instagram.handle})`,
+      snippet: `${profile.instagramShowcase.bioLines.join(' · ')}`,
+      body: `${profile.socials.instagram.label} ${profile.socials.instagram.handle} ${profile.socials.instagram.url} ${profile.instagramShowcase.posts.map((p) => `${p.title} ${p.caption}`).join(' ')}`,
+      keywords: [
+        'instagram',
+        'ig',
+        'insta',
+        'mr_the_sarthak',
+        profile.socials.instagram.handle,
+        'social',
+        'photos',
+        'reels',
+      ],
+      sectionId: 'instagram',
+      meta: 'In-Site Instagram · @mr_the_sarthak',
     });
   }
 
@@ -194,20 +243,6 @@ export function buildSearchCorpus(profile: ProfileData): SearchDocument[] {
     });
   }
 
-  for (const item of profile.media) {
-    docs.push({
-      id: item.id,
-      kind: 'Visual Journal',
-      title: item.title,
-      snippet: item.caption,
-      body: `${item.subtitle} ${item.caption} ${item.alt}`,
-      keywords: [item.type, item.category, 'gallery', 'visual', 'media'],
-      sectionId: 'gallery',
-      meta: `${item.category} · ${item.date}`,
-      actionHint: item.id,
-    });
-  }
-
   for (const faq of profile.faqs) {
     docs.push({
       id: faq.id,
@@ -219,19 +254,6 @@ export function buildSearchCorpus(profile: ProfileData): SearchDocument[] {
       sectionId: 'faq',
       meta: 'Direct Q&A',
       actionHint: faq.id,
-    });
-  }
-
-  if (profile.socials.instagram.enabled) {
-    docs.push({
-      id: 'social-instagram',
-      kind: 'Connect',
-      title: `Instagram (${profile.socials.instagram.handle})`,
-      snippet: profile.socials.instagram.description,
-      body: `${profile.socials.instagram.label} ${profile.socials.instagram.handle} ${profile.socials.instagram.url} ${profile.socials.instagram.description}`,
-      keywords: ['instagram', 'ig', 'insta', 'social', 'follow', 'dm'],
-      sectionId: 'connect',
-      meta: 'Social Profile · Active',
     });
   }
 
@@ -352,7 +374,12 @@ export function searchProfile(
 
     if (score > 0) {
       const richnessBoost =
-        doc.kind === 'Skill' || doc.kind === 'Biography'
+        doc.kind === 'Developer Profile' ||
+        doc.kind === 'Google Badges' ||
+        doc.kind === 'Skill' ||
+        doc.kind === 'Instagram' ||
+        doc.kind === 'Gaming' ||
+        doc.kind === 'About'
           ? 8
           : doc.kind === 'Connect' || doc.kind === 'FAQ'
             ? 4

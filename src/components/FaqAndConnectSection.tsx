@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import {
   ArrowUpRight,
+  Award,
   Check,
   ChevronDown,
   Copy,
@@ -79,7 +80,7 @@ export function FaqAndConnectSection({
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <p className="text-xs font-medium text-[#7C4A2D] dark:text-[#C88A55]">
-              04. Direct Questions &amp; Search Clarity
+              05. Direct Questions &amp; Search Clarity
             </p>
             <h2
               id="faq-heading"
@@ -140,7 +141,7 @@ export function FaqAndConnectSection({
             {/* Left column: Social links & direct email */}
             <div className="lg:col-span-5">
               <p className="text-xs font-medium text-[#7C4A2D] dark:text-[#C88A55]">
-                05. Direct Channels
+                06. Direct Channels
               </p>
               <h2
                 id="connect-heading"
@@ -221,6 +222,35 @@ export function FaqAndConnectSection({
                         </p>
                         <p className="text-xs text-[#6B5849] dark:text-[#A99888]">
                           {profile.socials.github.description}
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowUpRight
+                      className="h-4 w-4 shrink-0 text-[#7C4A2D] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 dark:text-[#C88A55]"
+                      aria-hidden="true"
+                    />
+                  </a>
+                )}
+
+                {/* Google Developer Profile */}
+                {profile.socials.googleDev.enabled && (
+                  <a
+                    href={profile.socials.googleDev.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center justify-between rounded-xl border border-[#DCD0BF] bg-[#F5F0E8] p-4 transition-colors hover:border-[#7C4A2D] dark:border-[#342A23] dark:bg-[#14100D] dark:hover:border-[#C88A55]"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <Award
+                        className="h-5 w-5 shrink-0 text-[#7C4A2D] dark:text-[#C88A55]"
+                        aria-hidden="true"
+                      />
+                      <div>
+                        <p className="text-sm font-semibold text-[#1E1611] dark:text-[#F4EDE4]">
+                          {profile.socials.googleDev.label} · {profile.socials.googleDev.handle}
+                        </p>
+                        <p className="text-xs text-[#6B5849] dark:text-[#A99888]">
+                          {profile.socials.googleDev.description}
                         </p>
                       </div>
                     </div>

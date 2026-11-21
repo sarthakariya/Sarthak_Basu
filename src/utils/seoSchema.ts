@@ -18,11 +18,14 @@ export function buildPersonSchemaGraph(
   if (profile.socials.instagram.enabled && profile.socials.instagram.url) {
     sameAs.push(profile.socials.instagram.url);
   }
-  if (profile.socials.linkedin.enabled && profile.socials.linkedin.url) {
-    sameAs.push(profile.socials.linkedin.url);
-  }
   if (profile.socials.github.enabled && profile.socials.github.url) {
     sameAs.push(profile.socials.github.url);
+  }
+  if (profile.socials.googleDev.enabled && profile.socials.googleDev.url) {
+    sameAs.push(profile.socials.googleDev.url);
+  }
+  if (profile.socials.linkedin.enabled && profile.socials.linkedin.url) {
+    sameAs.push(profile.socials.linkedin.url);
   }
 
   const knowsAbout = Array.from(
@@ -42,8 +45,10 @@ export function buildPersonSchemaGraph(
     name: profile.fullName,
     givenName: profile.givenName,
     familyName: profile.familyName,
+    alternateName: profile.alternateNames,
+    jobTitle: profile.roleLabel,
     email: `mailto:${profile.email}`,
-    description: profile.bio.thirdPerson.lead,
+    description: profile.tagline,
     image: imageUrl,
     knowsAbout,
     sameAs,
@@ -56,7 +61,7 @@ export function buildPersonSchemaGraph(
   const profilePageNode: Record<string, unknown> = {
     '@type': 'ProfilePage',
     '@id': profilePageId,
-    name: `${profile.fullName} — Official About Me Profile`,
+    name: `${profile.fullName} — Official Developer & Personal Profile`,
     mainEntity: { '@id': personId },
   };
 
