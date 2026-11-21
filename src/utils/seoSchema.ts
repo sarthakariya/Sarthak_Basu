@@ -32,6 +32,7 @@ export function buildPersonSchemaGraph(
     new Set([
       ...profile.seoKeywords.filter((k) => k !== profile.fullName),
       ...profile.skills.flatMap((skill) => skill.keywords),
+      ...profile.techStack.flatMap((group) => group.tools),
     ])
   );
 
@@ -46,7 +47,12 @@ export function buildPersonSchemaGraph(
     givenName: profile.givenName,
     familyName: profile.familyName,
     alternateName: profile.alternateNames,
-    jobTitle: profile.roleLabel,
+    jobTitle: 'Full-Stack Web & AI Developer',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: profile.city,
+      addressCountry: profile.country,
+    },
     email: `mailto:${profile.email}`,
     description: profile.tagline,
     image: imageUrl,
@@ -61,7 +67,7 @@ export function buildPersonSchemaGraph(
   const profilePageNode: Record<string, unknown> = {
     '@type': 'ProfilePage',
     '@id': profilePageId,
-    name: `${profile.fullName} — Official Developer & Personal Profile`,
+    name: `${profile.fullName} — Full-Stack Web & AI Developer`,
     mainEntity: { '@id': personId },
   };
 

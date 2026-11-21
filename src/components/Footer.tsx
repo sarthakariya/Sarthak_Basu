@@ -1,4 +1,5 @@
-import { ArrowUp, Moon, Sun } from 'lucide-react';
+import { useState } from 'react';
+import { Check, Copy } from 'lucide-react';
 import type { ProfileData } from '../data/profileData';
 
 interface FooterProps {
@@ -7,82 +8,80 @@ interface FooterProps {
   onToggleTheme: () => void;
 }
 
-export function Footer({ profile, isDark, onToggleTheme }: FooterProps) {
+export function Footer({ profile }: FooterProps) {
   const year = new Date().getFullYear();
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(profile.email);
+      }
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    }
+  }
 
   return (
-    <footer className="border-t border-[#DCD0BF] bg-[#EDE5D8]/60 py-10 dark:border-[#342A23] dark:bg-[#110D0A]">
-      <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-5 sm:flex-row sm:items-center sm:px-8">
-        <div>
-          <p className="font-display text-xl font-semibold text-[#1E1611] dark:text-[#F4EDE4]">
-            {profile.fullName}
-          </p>
-          <p className="mt-1 text-xs text-[#6B5849] dark:text-[#A99888]">
-            © {year} {profile.fullName}. Official personal profile &amp; portfolio.
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-5 text-xs font-medium text-[#5C4B3E] dark:text-[#C2B2A2]">
-          {profile.socials.github.enabled && (
-            <a
-              href={profile.socials.github.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline-offset-4 transition-colors hover:text-[#1E1611] hover:underline dark:hover:text-[#F4EDE4]"
-            >
-              GitHub
-            </a>
-          )}
-          {profile.socials.googleDev.enabled && (
-            <a
-              href={profile.socials.googleDev.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline-offset-4 transition-colors hover:text-[#1E1611] hover:underline dark:hover:text-[#F4EDE4]"
-            >
-              g.dev
-            </a>
-          )}
-          {profile.socials.instagram.enabled && (
-            <a
-              href={profile.socials.instagram.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline-offset-4 transition-colors hover:text-[#1E1611] hover:underline dark:hover:text-[#F4EDE4]"
-            >
-              Instagram
-            </a>
-          )}
-          <a
-            href={`mailto:${profile.email}`}
-            className="underline-offset-4 transition-colors hover:text-[#1E1611] hover:underline dark:hover:text-[#F4EDE4]"
-          >
-            Email
-          </a>
+    <footer className="mx-auto max-w-3xl px-5 pt-4 pb-12 sm:px-6">
+      <div className="flex flex-col items-start justify-between gap-4 border-t border-[#DCD0BF] pt-6 text-xs text-[#6B5849] sm:flex-row sm:items-center dark:border-[#261E19] dark:text-[#9D8D7E]">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="font-medium text-[#1E1611] dark:text-[#E5DACD]">
+            © {year} {profile.fullName}
+          </span>
+          <span aria-hidden="true">·</span>
           <button
             type="button"
-            onClick={onToggleTheme}
-            className="inline-flex min-h-[36px] items-center gap-1.5 underline-offset-4 transition-colors hover:text-[#1E1611] hover:underline dark:hover:text-[#F4EDE4]"
+            onClick={handleCopy}
+            className="inline-flex items-center gap-1 transition-colors hover:text-[#1E1611] dark:hover:text-[#F5EDE3]"
           >
-            {isDark ? (
-              <>
-                <Sun className="h-3.5 w-3.5" aria-hidden="true" />
-                <span>Warm Beige</span>
-              </>
+            <span>{copied ? 'Email copied' : profile.email}</span>
+            {copied ? (
+              <Check className="h-3 w-3 text-[#7C4A2D] dark:text-[#C88A55]" aria-hidden="true" />
             ) : (
-              <>
-                <Moon className="h-3.5 w-3.5" aria-hidden="true" />
-                <span>Espresso Dark</span>
-              </>
+              <Copy className="h-3 w-3 opacity-70" aria-hidden="true" />
             )}
           </button>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-4 font-medium">
           <a
-            href="#top"
-            className="inline-flex min-h-[36px] items-center gap-1 text-[#7C4A2D] underline-offset-4 hover:underline dark:text-[#C88A55]"
+            href={profile.socials.github.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-[#1E1611] dark:hover:text-[#F5EDE3]"
           >
-            <span>Top</span>
-            <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
+            GitHub
           </a>
+          <a
+            href={profile.socials.googleDev.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-[#1E1611] dark:hover:text-[#F5EDE3]"
+          >
+            Google Dev
+          </a>
+          <a
+            href={profile.socials.instagram.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-[#1E1611] dark:hover:text-[#F5EDE3]"
+          >
+            Instagram
+          </a>
+          {profile.socials.linkedin.enabled && profile.socials.linkedin.url && (
+            <a
+              href={profile.socials.linkedin.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-[#1E1611] dark:hover:text-[#F5EDE3]"
+            >
+              LinkedIn
+            </a>
+          )}
         </div>
       </div>
     </footer>

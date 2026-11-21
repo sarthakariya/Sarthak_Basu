@@ -27,6 +27,32 @@ export interface GitHubPreviewPayload {
   source: 'live' | 'fallback';
 }
 
+/**
+ * Personal / non-business repositories excluded from the public professional portfolio
+ * until archived or set to Private on GitHub.
+ */
+const EXCLUDED_PERSONAL_REPOS = new Set([
+  'we-watch',
+  '1st-anniversary',
+  'our-ellipse',
+  'our-music-together',
+  'our-music-together1',
+  'herbday2026',
+  'herbirthday2k26',
+  'reechita',
+  'countdown',
+]);
+
+const PERSONAL_REPO_PATTERN =
+  /(anniversary|bday|birthday|our-music|we-watch|our-ellipse|reechita)/i;
+
+export function isBusinessRelevantRepo(repoName: string): boolean {
+  const normalized = repoName.trim().toLowerCase();
+  if (!normalized) return false;
+  if (EXCLUDED_PERSONAL_REPOS.has(normalized)) return false;
+  return !PERSONAL_REPO_PATTERN.test(normalized);
+}
+
 export function normalizeGitHubUser(
   raw: Record<string, unknown>,
   fallbackUsername: string
@@ -35,17 +61,19 @@ export function normalizeGitHubUser(
     typeof raw.login === 'string' && raw.login.trim()
       ? raw.login
       : fallbackUsername;
+  const rawName = typeof raw.name === 'string' ? raw.name.trim() : '';
+  // Guard against stylized display names (e.g. "S@rth@k ;)") so the business portfolio stays clean
+  const isProfessionalName =
+    rawName.length > 0 && /^[a-zA-Z\s.-]+$/.test(rawName);
+
   return {
     login,
-    name:
-      typeof raw.name === 'string' && raw.name.trim()
-        ? raw.name
-        : 'Sarthak Basu',
+    name: isProfessionalName ? rawName : 'Sarthak Basu',
     avatarUrl: typeof raw.avatar_url === 'string' ? raw.avatar_url : '',
     bio:
       typeof raw.bio === 'string' && raw.bio.trim()
         ? raw.bio
-        : 'Class 12 Computer Science student, web & site developer, tech enthusiast, and gamer.',
+        : 'Full-Stack Web & AI Developer from Kolkata, India — building AI agents (ADK, Gemini API), real-time cloud apps, and high-craft interfaces.',
     publicRepos: typeof raw.public_repos === 'number' ? raw.public_repos : 0,
     followers: typeof raw.followers === 'number' ? raw.followers : 0,
     following: typeof raw.following === 'number' ? raw.following : 0,
@@ -65,15 +93,21 @@ export function normalizeGitHubRepos(
   const parsed: GitHubRepoSummary[] = rawList
     .filter(
       (item): item is Record<string, unknown> =>
-        typeof item === 'object' && item !== null && typeof (item as Record<string, unknown>).name === 'string'
+        typeof item === 'object' &&
+        item !== null &&
+        typeof (item as Record<string, unknown>).name === 'string' &&
+        isBusinessRelevantRepo(String((item as Record<string, unknown>).name))
     )
     .map((item) => ({
-      id: typeof item.id === 'number' ? item.id : Math.floor(Math.random() * 100000),
+      id:
+        typeof item.id === 'number'
+          ? item.id
+          : Math.floor(Math.random() * 100000),
       name: String(item.name),
       description:
         typeof item.description === 'string' && item.description.trim()
           ? item.description
-          : 'Web & software project published on GitHub.',
+          : 'Web & software engineering project published on GitHub.',
       htmlUrl:
         typeof item.html_url === 'string'
           ? item.html_url
@@ -85,8 +119,7 @@ export function normalizeGitHubRepos(
       stars:
         typeof item.stargazers_count === 'number' ? item.stargazers_count : 0,
       forks: typeof item.forks_count === 'number' ? item.forks_count : 0,
-      updatedAt:
-        typeof item.updated_at === 'string' ? item.updated_at : '',
+      updatedAt: typeof item.updated_at === 'string' ? item.updated_at : '',
       isFork: Boolean(item.fork),
     }));
 
@@ -120,7 +153,7 @@ export function buildFallbackGitHubPreview(
       login: username,
       name: 'Sarthak Basu',
       avatarUrl: portraitUrl,
-      bio: 'Class 12 Computer Science student, web & site developer, tech enthusiast, and gamer.',
+      bio: 'Full-Stack Web & AI Developer from Kolkata, India — building AI agents (ADK, Gemini API), real-time cloud apps, and high-craft interfaces.',
       publicRepos: 0,
       followers: 0,
       following: 0,
@@ -142,7 +175,7 @@ export async function fetchGitHubPreview(
         signal,
       }),
       fetch(
-        `https://api.github.com/users/${encodeURIComponent(username)}/repos?sort=updated&per_page=10`,
+        `https://api.github.com/users/${encodeURIComponent(username)}/repos?sort=updated&per_page=30`,
         {
           headers: { Accept: 'application/vnd.github+json' },
           signal,

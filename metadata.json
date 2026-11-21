@@ -1,6 +1,8 @@
 {
-  "name": "Sarthak Basu — Developer, Google Badges & Personal Profile",
-  "description": "Official SEO-optimized About Me profile of Sarthak Basu, Class 12 Computer Science student, web and site developer, Google Developer badges holder (g.dev/mrsarthak), GitHub builder (sarthakariya), and gamer.",
+  "name": "Sarthak Basu — Full-Stack Web & AI Developer",
+  "description": "Official profile of Sarthak Basu (@mr_the_sarthak), Full-Stack Web & AI Developer from Kolkata, India. Building AI agents with ADK & Gemini API, real-time web apps with Firebase, Supabase & Spring Boot, and high-craft interfaces.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

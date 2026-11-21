@@ -4,7 +4,8 @@ export type SearchResultKind =
   | 'About'
   | 'Developer Profile'
   | 'Google Badges'
-  | 'Skill'
+  | 'Capability'
+  | 'Tech Stack'
   | 'Instagram'
   | 'Gaming'
   | 'Key Detail'
@@ -48,38 +49,48 @@ interface SearchDocument {
 }
 
 const SYNONYM_MAP: Record<string, string[]> = {
+  adk: ['agent development kit', 'ai agents', 'gemini', 'workflows'],
+  ai: ['agent development kit', 'gemini api', 'google ai studio', 'agents', 'opal', 'jules'],
+  llm: ['ai agents', 'gemini api', 'adk', 'workflows'],
+  gemini: ['ai agents', 'google ai studio', 'adk'],
+  cursor: ['ai', 'agentic', 'tools', 'stack'],
+  opal: ['ai', 'agentic', 'tools', 'stack'],
+  jules: ['ai', 'agentic', 'tools', 'stack'],
+  spring: ['spring boot', 'java', 'backend'],
+  java: ['spring boot', 'languages', 'backend', 'stack'],
+  python: ['languages', 'ai', 'backend', 'stack'],
+  firebase: ['realtime', 'database', 'backend', 'cloud', 'supabase'],
+  supabase: ['database', 'backend', 'cloud', 'firebase'],
+  gcp: ['google cloud platform', 'cloud', 'hosting'],
+  netlify: ['hosting', 'github pages', 'cloud'],
+  capcut: ['video editing', 'design', 'media', 'reels'],
+  ui: ['ui/ux', 'frontend', 'micro-animations', 'liquid-glass'],
+  ux: ['ui/ux', 'frontend', 'prototyping', 'editorial'],
+  kolkata: ['location', 'india', 'remote', 'sarthak basu'],
+  remote: ['kolkata', 'global', 'collaboration', 'availability'],
   ig: ['instagram', 'mr_the_sarthak', 'social', 'photos', 'reels'],
   insta: ['instagram', 'mr_the_sarthak', 'social'],
   instagram: ['ig', 'mr_the_sarthak', 'social', 'posts'],
   github: ['sarthakariya', 'repos', 'code', 'developer', 'projects'],
   repos: ['github', 'sarthakariya', 'projects', 'code'],
-  code: ['github', 'web', 'site', 'developer', 'computer science'],
   gdev: ['google', 'badges', 'certificates', 'mrsarthak'],
-  google: ['gdev', 'badges', 'certificates', 'mrsarthak'],
+  google: ['gdev', 'badges', 'certificates', 'mrsarthak', 'gcp'],
   badges: ['google', 'certificates', 'gdev', 'mrsarthak'],
   certificates: ['google', 'badges', 'gdev', 'mrsarthak'],
   minecraft: ['gaming', 'gamer', 'discord', 'mc'],
   mc: ['minecraft', 'gaming', 'gamer'],
   gta: ['gta v', 'gaming', 'gamer', 'discord'],
   gta5: ['gta v', 'gaming', 'gamer'],
-  gtf: ['gta v', 'gaming', 'gamer'],
   gamer: ['gaming', 'minecraft', 'gta v', 'discord'],
   gaming: ['gamer', 'minecraft', 'gta v', 'discord'],
   discord: ['gaming', 'minecraft', 'gta v', 'gamer'],
-  site: ['web', 'developer', 'website', 'frontend'],
-  web: ['site', 'developer', 'website', 'frontend'],
-  dev: ['developer', 'github', 'google', 'site', 'web'],
-  student: ['class 12', 'computer science', 'cs'],
-  cs: ['computer science', 'class 12', 'developer'],
-  hire: ['contact', 'email', 'connect', 'collaborate'],
+  stack: ['tech stack', 'languages', 'frameworks', 'tools'],
+  hire: ['contact', 'email', 'connect', 'collaborate', 'remote'],
   contact: ['email', 'instagram', 'discord', 'connect'],
   mail: ['email', 'contact', '26sarthakbasu'],
-  speak: ['communication', 'collaboration', 'presentations'],
-  writing: ['communication', 'clarity'],
-  debug: ['problem', 'solving', 'debugging', 'analytical'],
-  deadlines: ['time', 'management', 'priority', 'reliability'],
-  schedule: ['time', 'management', 'priority'],
-  who: ['sarthak', 'basu', 'about', 'class 12', 'developer'],
+  communication: ['transferable', 'collaboration', 'about'],
+  deadlines: ['time management', 'transferable', 'about'],
+  who: ['sarthak', 'basu', 'about', 'full-stack', 'kolkata'],
 };
 
 const STOP_WORDS = new Set([
@@ -139,30 +150,36 @@ export function buildSearchCorpus(profile: ProfileData): SearchDocument[] {
   docs.push({
     id: 'about-story',
     kind: 'About',
-    title: `About ${profile.fullName} — Class 12 CS & Site Developer`,
+    title: `About ${profile.fullName} — Full-Stack Web & AI Developer (${profile.city}, ${profile.country})`,
     snippet: profile.about.lead,
-    body: [profile.about.lead, ...profile.about.paragraphs].join(' '),
+    body: [
+      profile.about.lead,
+      ...profile.about.paragraphs,
+      ...profile.transferablePillars.map((p) => `${p.title} ${p.detail}`),
+    ].join(' '),
     keywords: [
       'about',
       'story',
-      'class 12',
-      'computer science',
-      'cs',
-      'developer',
-      'site developer',
-      'tech guy',
+      'full-stack',
+      'ai developer',
+      'kolkata',
+      'india',
+      'remote',
+      'communication',
+      'problem-solving',
+      'time management',
       profile.fullName,
     ],
     sectionId: 'about',
-    meta: 'About Me · First Person',
+    meta: 'About Me · Kolkata, India',
   });
 
   docs.push({
     id: 'profile-github',
     kind: 'Developer Profile',
-    title: `GitHub Live Repositories (${profile.socials.github.handle})`,
-    snippet: `Inspect Sarthak Basu's live public repositories, code, and activity at github.com/${profile.githubUsername}.`,
-    body: `${profile.socials.github.url} ${profile.socials.github.handle} ${profile.socials.github.description} live github repos open source web developer`,
+    title: `GitHub Engineering Repositories (${profile.socials.github.handle})`,
+    snippet: `Inspect Sarthak Basu's public engineering repositories and activity at github.com/${profile.githubUsername}.`,
+    body: `${profile.socials.github.url} ${profile.socials.github.handle} ${profile.socials.github.description} live github repos open source`,
     keywords: ['github', 'sarthakariya', 'repos', 'repositories', 'code', 'projects'],
     sectionId: 'profiles',
     meta: 'Developer Profile · Live API',
@@ -175,46 +192,70 @@ export function buildSearchCorpus(profile: ProfileData): SearchDocument[] {
     snippet: profile.googleDev.summary,
     body: [
       profile.googleDev.handle,
+      profile.googleDev.url,
       profile.googleDev.summary,
       ...profile.googleDev.badges.map((b) => `${b.title} ${b.summary} ${b.category}`),
     ].join(' '),
-    keywords: ['google', 'badges', 'certificates', 'g.dev', 'mrsarthak', 'gdev', 'credentials'],
+    keywords: [
+      'google',
+      'google profile',
+      'badges',
+      'certificates',
+      'me.developers.google.com',
+      'g.dev',
+      'mrsarthak',
+      'gdev',
+      'credentials',
+    ],
     sectionId: 'profiles',
-    meta: 'Google Developer · g.dev/mrsarthak',
-  });
-
-  docs.push({
-    id: 'about-gaming',
-    kind: 'Gaming',
-    title: 'Gaming & Discord — Minecraft & GTA V',
-    snippet: `${profile.gaming.discordNote} Games: ${profile.gaming.games.map((g) => g.name).join(' & ')}. Discord: ${profile.gaming.discordHandle}.`,
-    body: `${profile.gaming.tagline} ${profile.gaming.discordHandle} ${profile.gaming.discordNote} ${profile.gaming.games.map((g) => `${g.name} ${g.style}`).join(' ')}`,
-    keywords: ['gaming', 'gamer', 'minecraft', 'gta v', 'gta 5', 'gtf 5', 'discord', 'mc'],
-    sectionId: 'about',
-    meta: 'Off-Duty · Gaming & Discord',
+    meta: 'Google Developer · mrsarthak',
   });
 
   for (const skill of profile.skills) {
     docs.push({
       id: skill.id,
-      kind: 'Skill',
+      kind: 'Capability',
       title: skill.title,
       snippet: skill.summary,
-      body: `${skill.summary} ${skill.methodology} ${skill.impactMetric}`,
-      keywords: [skill.category, ...skill.keywords, 'transferable skills'],
+      body: `${skill.summary} ${skill.impactMetric}`,
+      keywords: [skill.category, ...skill.keywords],
       sectionId: 'skills',
-      meta: `Core Skill · ${skill.category}`,
+      meta: `Core Capability · ${skill.category}`,
       actionHint: skill.category,
     });
   }
+
+  for (const group of profile.techStack) {
+    docs.push({
+      id: group.id,
+      kind: 'Tech Stack',
+      title: `Tech Stack · ${group.category}`,
+      snippet: `${group.tools.join(' · ')} — ${group.note}`,
+      body: `${group.category} ${group.tools.join(' ')} ${group.note}`,
+      keywords: ['tech stack', 'stack', group.category, ...group.tools],
+      sectionId: 'tech-stack',
+      meta: `Technical Stack · ${group.index}`,
+    });
+  }
+
+  docs.push({
+    id: 'about-gaming',
+    kind: 'Gaming',
+    title: 'Off-Duty Gaming & Discord — Minecraft & GTA V',
+    snippet: `${profile.gaming.discordNote} Games: ${profile.gaming.games.map((g) => g.name).join(' & ')}. Discord: ${profile.gaming.discordHandle}.`,
+    body: `${profile.gaming.tagline} ${profile.gaming.discordHandle} ${profile.gaming.discordNote} ${profile.gaming.games.map((g) => `${g.name} ${g.style}`).join(' ')}`,
+    keywords: ['gaming', 'gamer', 'minecraft', 'gta v', 'gta 5', 'discord', 'mc'],
+    sectionId: 'about',
+    meta: 'Off-Duty · Gaming & Discord',
+  });
 
   if (profile.socials.instagram.enabled) {
     docs.push({
       id: 'social-instagram',
       kind: 'Instagram',
-      title: `Instagram Profile Showcase (${profile.socials.instagram.handle})`,
-      snippet: `${profile.instagramShowcase.bioLines.join(' · ')}`,
-      body: `${profile.socials.instagram.label} ${profile.socials.instagram.handle} ${profile.socials.instagram.url} ${profile.instagramShowcase.posts.map((p) => `${p.title} ${p.caption}`).join(' ')}`,
+      title: `Instagram Live Preview (${profile.socials.instagram.handle})`,
+      snippet: `${profile.instagramPreview.bioLines.join(' · ')}`,
+      body: `${profile.socials.instagram.label} ${profile.socials.instagram.handle} ${profile.socials.instagram.url} ${profile.instagramPreview.bioLines.join(' ')}`,
       keywords: [
         'instagram',
         'ig',
@@ -222,11 +263,10 @@ export function buildSearchCorpus(profile: ProfileData): SearchDocument[] {
         'mr_the_sarthak',
         profile.socials.instagram.handle,
         'social',
-        'photos',
-        'reels',
+        'profile',
       ],
       sectionId: 'instagram',
-      meta: 'In-Site Instagram · @mr_the_sarthak',
+      meta: 'Live Instagram Embed · @mr_the_sarthak',
     });
   }
 
@@ -276,7 +316,7 @@ export function buildSearchCorpus(profile: ProfileData): SearchDocument[] {
     title: `Direct Email (${profile.email})`,
     snippet: `${profile.availability}. Reach ${profile.fullName} directly via email or the contact form below.`,
     body: `${profile.email} ${profile.availability} ${profile.location}`,
-    keywords: ['email', 'contact', 'hire', 'message', 'collaborate', 'inquiry'],
+    keywords: ['email', 'contact', 'hire', 'message', 'collaborate', 'remote', 'inquiry'],
     sectionId: 'connect',
     meta: 'Direct Contact',
   });
@@ -374,9 +414,10 @@ export function searchProfile(
 
     if (score > 0) {
       const richnessBoost =
+        doc.kind === 'Capability' ||
+        doc.kind === 'Tech Stack' ||
         doc.kind === 'Developer Profile' ||
         doc.kind === 'Google Badges' ||
-        doc.kind === 'Skill' ||
         doc.kind === 'Instagram' ||
         doc.kind === 'Gaming' ||
         doc.kind === 'About'

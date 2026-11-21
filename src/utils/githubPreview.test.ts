@@ -3,56 +3,66 @@ import assert from 'node:assert/strict';
 import {
   buildFallbackGitHubPreview,
   formatRepoUpdatedDate,
+  isBusinessRelevantRepo,
   normalizeGitHubRepos,
   normalizeGitHubUser,
 } from './githubPreview';
 
-test('normalizeGitHubUser falls back safely on missing fields', () => {
+test('normalizeGitHubUser enforces clean business display name when GitHub name is stylized', () => {
   const user = normalizeGitHubUser(
-    { login: 'sarthakariya', public_repos: 12, followers: 5 },
+    { login: 'sarthakariya', name: 'S@rth@k ;)', public_repos: 23, followers: 1 },
     'sarthakariya'
   );
   assert.equal(user.login, 'sarthakariya');
   assert.equal(user.name, 'Sarthak Basu');
-  assert.equal(user.publicRepos, 12);
-  assert.equal(user.followers, 5);
+  assert.equal(user.publicRepos, 23);
+  assert.equal(user.followers, 1);
   assert.equal(user.htmlUrl, 'https://github.com/sarthakariya');
 });
 
-test('normalizeGitHubRepos prioritizes non-fork repos and higher stars', () => {
+test('isBusinessRelevantRepo filters out personal/non-business repositories', () => {
+  assert.equal(isBusinessRelevantRepo('1st-Anniversary'), false);
+  assert.equal(isBusinessRelevantRepo('our-music-together1'), false);
+  assert.equal(isBusinessRelevantRepo('We-watch'), false);
+  assert.equal(isBusinessRelevantRepo('Our-Ellipse'), false);
+  assert.equal(isBusinessRelevantRepo('Sarthak_Basu'), true);
+  assert.equal(isBusinessRelevantRepo('24-7news'), true);
+  assert.equal(isBusinessRelevantRepo('CinemaCast'), true);
+});
+
+test('normalizeGitHubRepos filters personal repos and sorts business repos by non-fork & stars', () => {
   const repos = normalizeGitHubRepos(
     [
       {
         id: 1,
-        name: 'forked-lib',
-        fork: true,
-        stargazers_count: 20,
-        updated_at: '2026-10-01T00:00:00Z',
-      },
-      {
-        id: 2,
-        name: 'my-portfolio',
+        name: '1st-Anniversary',
         fork: false,
-        language: 'TypeScript',
-        stargazers_count: 5,
+        stargazers_count: 50,
         updated_at: '2026-11-01T00:00:00Z',
       },
       {
-        id: 3,
-        name: 'web-starter',
+        id: 2,
+        name: 'Sarthak_Basu',
         fork: false,
-        language: 'HTML',
+        language: 'TypeScript',
+        stargazers_count: 5,
+        updated_at: '2026-11-10T00:00:00Z',
+      },
+      {
+        id: 3,
+        name: 'CinemaCast',
+        fork: false,
+        language: 'JavaScript',
         stargazers_count: 14,
-        updated_at: '2026-09-01T00:00:00Z',
+        updated_at: '2026-10-01T00:00:00Z',
       },
     ],
     4
   );
 
-  assert.equal(repos.length, 3);
-  assert.equal(repos[0].name, 'web-starter');
-  assert.equal(repos[1].name, 'my-portfolio');
-  assert.equal(repos[2].name, 'forked-lib');
+  assert.equal(repos.length, 2);
+  assert.equal(repos[0].name, 'CinemaCast');
+  assert.equal(repos[1].name, 'Sarthak_Basu');
 });
 
 test('formatRepoUpdatedDate formats ISO strings and handles invalid input', () => {
