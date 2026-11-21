@@ -76,9 +76,14 @@ const SYNONYM_MAP: Record<string, string[]> = {
   repos: ['github', 'sarthakariya', 'projects', 'code'],
   gdev: ['google', 'badges', 'certificates', 'mrsarthak'],
   google: ['gdev', 'badges', 'certificates', 'mrsarthak', 'gcp'],
-  badges: ['google', 'certificates', 'gdev', 'mrsarthak'],
-  certificates: ['karate', 'swimming', 'class 10', 'google', 'microsoft', 'badges'],
-  microsoft: ['google', 'certificates', 'developer', 'events'],
+  badges: ['google', 'credly', 'certificates', 'gdev', 'mrsarthak'],
+  credly: ['badges', 'certificates', 'verified', 'digital'],
+  bserc: ['artificial intelligence', 'space day', 'certificates', 'workshop', 'ai'],
+  unstop: ['quizoff', 'campuscrew', 'gemini', 'certificates', 'ai'],
+  campuscrew: ['quizoff', 'unstop', 'gemini', 'certificates', 'ai'],
+  quizoff: ['unstop', 'campuscrew', 'gemini', 'certificates', 'ai'],
+  hirendra: ['school', 'class 12', 'kolkata', 'about', 'bserc'],
+  certificates: ['bserc', 'quizoff', 'unstop', 'credly', 'karate', 'swimming', 'class 10', 'badges'],
   karate: ['certificates', 'sports', 'martial arts', 'discipline'],
   swimming: ['certificates', 'sports', 'aquatic', 'athletic'],
   minecraft: ['friends fun', 'smp', 'community', '3000', 'server'],
@@ -88,7 +93,7 @@ const SYNONYM_MAP: Record<string, string[]> = {
   hire: ['contact', 'email', 'connect', 'collaborate', 'remote'],
   contact: ['email', 'instagram', 'connect'],
   mail: ['email', 'contact', '26sarthakbasu'],
-  who: ['sarthak', 'basu', 'about', 'google', 'microsoft', 'kolkata'],
+  who: ['sarthak', 'basu', 'about', 'developer', 'kolkata', 'hirendra'],
 };
 
 const STOP_WORDS = new Set([
@@ -148,23 +153,33 @@ export function buildSearchCorpus(profile: ProfileData): SearchDocument[] {
   docs.push({
     id: 'about-story',
     kind: 'About',
-    title: `${profile.fullName} — Google Developer & Web/AI Builder (${profile.city}, ${profile.country})`,
+    title: `${profile.fullName} — Full-Stack Web & AI Developer (${profile.city}, ${profile.country})`,
     snippet: profile.about.lead,
-    body: [profile.about.lead, ...profile.about.paragraphs].join(' '),
+    body: [profile.about.lead, ...profile.about.paragraphs, profile.school].join(' '),
     keywords: [
       'about',
       'story',
-      'google developer',
-      'microsoft',
       'full-stack',
       'ai developer',
+      'hirendra leela patranavis school',
       'kolkata',
       'india',
       'class 12',
       profile.fullName,
     ],
     sectionId: 'about',
-    meta: 'Profile · Kolkata, India',
+    meta: 'About · Kolkata, India',
+  });
+
+  docs.push({
+    id: 'credly-badge',
+    kind: 'Certificates',
+    title: profile.credlyBadge.label,
+    snippet: `${profile.credlyBadge.subtitle} (${profile.credlyBadge.publicUrl})`,
+    body: `${profile.credlyBadge.label} ${profile.credlyBadge.subtitle} credly verified digital badge`,
+    keywords: ['credly', 'badge', 'badges', 'verified', 'certificate'],
+    sectionId: 'certificates',
+    meta: 'Verified Badge · Credly',
   });
 
   docs.push({

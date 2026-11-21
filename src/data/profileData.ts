@@ -44,7 +44,12 @@ export interface CommunityShowcase {
   }>;
 }
 
-export type CertificateCategory = 'tech' | 'academics' | 'sports';
+export type CertificateCategory = 'ai' | 'badges' | 'academics' | 'sports';
+
+export type CertificateImageKey =
+  | 'bserc-ai-2026'
+  | 'quizoff-2026'
+  | 'gemini-quizoff-2026';
 
 export interface CertificateItem {
   id: string;
@@ -55,8 +60,18 @@ export interface CertificateItem {
   period: string;
   summary: string;
   credentialNote: string;
+  credentialId?: string;
   verificationUrl?: string;
-  imageUrl?: string;
+  pdfUrl?: string;
+  imageKey?: CertificateImageKey;
+}
+
+export interface CredlyBadgeConfig {
+  badgeId: string;
+  host: string;
+  publicUrl: string;
+  label: string;
+  subtitle: string;
 }
 
 export interface KeyDetail {
@@ -96,6 +111,7 @@ export interface ProfileData {
   givenName: string;
   familyName: string;
   alternateNames: string[];
+  school: string;
   roleLabel: string;
   cyclingRoles: string[];
   headline: string;
@@ -109,6 +125,7 @@ export interface ProfileData {
   portraitAlt: string;
   stats: StatMetric[];
   community: CommunityShowcase;
+  credlyBadge: CredlyBadgeConfig;
   certificates: CertificateItem[];
   about: {
     lead: string;
@@ -162,22 +179,23 @@ export const PROFILE_DATA: ProfileData = {
   givenName: 'Sarthak',
   familyName: 'Basu',
   alternateNames: ['mr_the_sarthak', 'sarthakariya', 'mrsarthak'],
-  roleLabel: 'Google Developer · Microsoft Attendee · Web & AI Builder',
+  school: 'Hirendra Leela Patranavis School',
+  roleLabel: 'Full-Stack Web & AI Developer · Kolkata, India',
   cyclingRoles: [
-    'Google Developer & Web Builder',
-    'Microsoft Developer Event Attendee',
+    'Full-Stack Web & AI Developer',
     'Friends Fun SMP Founder (3,000+)',
+    'Class 12 CS · HLPS, Kolkata',
   ],
-  headline: 'Google Developer, Web & AI Builder.',
+  headline: 'Building web apps, AI workflows, and real communities.',
   tagline:
-    'Sarthak Basu is a Google Developer, Microsoft event attendee, and web & AI builder from Kolkata — founder of the 3,000+ member Friends Fun SMP community and currently in Class 12 CS.',
+    'Sarthak Basu is a Full-Stack Web & AI Developer from Kolkata, currently studying Class 12 Computer Science at Hirendra Leela Patranavis School and founder of the 3,000+ member Friends Fun SMP community.',
   city: 'Kolkata',
   country: 'India',
   location: 'Kolkata, India',
   email: '26sarthakbasu@gmail.com',
-  availability: 'Open for cool builds & collabs',
+  availability: 'Available for remote & global collaborations',
   portraitUrl: '/sarthak-basu.jpg',
-  portraitAlt: 'Portrait of Sarthak Basu, Google Developer and Web Builder',
+  portraitAlt: 'Portrait of Sarthak Basu, Full-Stack Web and AI Developer',
   stats: [
     {
       id: 'stat-community',
@@ -191,63 +209,109 @@ export const PROFILE_DATA: ProfileData = {
       target: 255,
       suffix: '+',
       label: 'GitHub Contributions',
-      detail: 'Active shipping in 2026',
+      detail: 'Open-source shipping in 2026',
     },
     {
-      id: 'stat-badges',
-      target: 10,
+      id: 'stat-certificates',
+      target: 6,
       suffix: '+',
-      label: 'Google Dev Badges',
-      detail: 'Builders Hub + Microsoft Events',
+      label: 'Verified Credentials',
+      detail: 'BSERC AI, Unstop, Credly & Sports',
     },
   ],
   community: {
     name: 'Friends Fun SMP',
-    role: 'Founder, Owner & Lead Dev',
+    role: 'Founder, Owner & Lead Developer',
     memberCount: '3,000+',
     launched: 'Jan 2021',
     url: 'https://friendsfunsmp.wixsite.com/friendsfun',
     displayUrl: 'friendsfunsmp.wixsite.com/friendsfun',
     summary:
-      'Sarthak built and ran Friends Fun SMP — a 3,000+ member Minecraft community where he coded the server setup, launched its official website, and managed the whole player base.',
+      'Sarthak founded and engineered Friends Fun SMP — a 3,000+ member Minecraft community where he built the server setup, designed the web portal, and led the player network.',
     highlights: [
       {
-        title: '3,000+ Players',
-        detail: 'Built and scaled a lively survival community with events & custom setups.',
+        title: '3,000+ Members',
+        detail: 'Grew and managed an active survival server with custom events and systems.',
       },
       {
-        title: 'Custom Web Hub',
-        detail: 'Designed and launched friendsfunsmp.wixsite.com/friendsfun from scratch.',
+        title: 'Web Portal',
+        detail: 'Built and launched friendsfunsmp.wixsite.com/friendsfun for the community.',
       },
       {
-        title: 'Full Ownership',
-        detail: 'Handled updates, infrastructure, and community leadership end to end.',
+        title: 'End-to-End Ownership',
+        detail: 'Maintained server configuration, community operations, and ongoing updates.',
       },
     ],
   },
+  credlyBadge: {
+    badgeId: 'af9db91d-d1ef-4330-8c4b-e365546c6834',
+    host: 'https://www.credly.com',
+    publicUrl:
+      'https://www.credly.com/badges/af9db91d-d1ef-4330-8c4b-e365546c6834/public_url',
+    label: 'Microsoft AI Skills Fest 2026',
+    subtitle: 'Issued by Microsoft · Verified digital badge via Credly',
+  },
   certificates: [
     {
-      id: 'cert-google-dev',
-      title: 'Google Developer & Microsoft Events',
-      issuer: 'Google Builders Hub · Microsoft Ecosystem',
-      category: 'tech',
-      categoryLabel: 'Tech',
+      id: 'cert-bserc-ai',
+      title: 'Artificial Intelligence Workshop — National Space Day 2026',
+      issuer: 'Bharat Space Education Research Centre (BSERC)',
+      category: 'ai',
+      categoryLabel: 'AI & Space Tech',
+      period: '23 Aug 2026',
+      summary:
+        'Completed the One Day Artificial Intelligence Workshop during Def-Space Innovation Week 2026 representing Hirendra Leela Patranavis School (3-hour program).',
+      credentialNote: 'Cert No: BSERC-2026-NSD26790',
+      credentialId: 'BSERC-2026-NSD26790',
+      pdfUrl: '/cert-bserc-ai-2026.pdf',
+      imageKey: 'bserc-ai-2026',
+    },
+    {
+      id: 'cert-quizoff-2026',
+      title: "QuizOff 2026: India's Biggest AI Quiz",
+      issuer: 'CampusCrew · Hosted on Unstop',
+      category: 'ai',
+      categoryLabel: 'AI Competition',
+      period: '19 Jul 2026',
+      summary:
+        'Recognized among select students competing alongside 5,25,000+ participants from 48,500+ institutions across 35+ countries.',
+      credentialNote: 'Signed by Aaradhya Gupta, Founder, CampusCrew',
+      imageKey: 'quizoff-2026',
+    },
+    {
+      id: 'cert-gemini-quizoff',
+      title: 'Google Gemini QuizOff 2026 — 100K Special',
+      issuer: 'CampusCrew · Unstop (#TeamGemini)',
+      category: 'ai',
+      categoryLabel: 'AI Competition',
       period: '2026',
       summary:
-        'Verified Google Developer with Firebase Studio, Chrome DevTools, Android SDK, Premium Tier & Google I/O 2026 badges, plus active Microsoft developer event attendance.',
-      credentialNote: 'Live on me.developers.google.com/u/mrsarthak',
+        'Certificate of participation in the CampusCrew 100K Special Certificate Distribution of Google Gemini QuizOff 2026 representing Friends Fun.',
+      credentialNote: 'Unstop · #TeamGemini',
+      imageKey: 'gemini-quizoff-2026',
+    },
+    {
+      id: 'cert-google-builders',
+      title: 'Google Builders Hub & Developer Program Badges',
+      issuer: 'Google Developers Profile (u/mrsarthak)',
+      category: 'badges',
+      categoryLabel: 'Digital Badges',
+      period: '2026',
+      summary:
+        'Earned verified community badges including Google Developer Program Premium Tier, Firebase Studio Developer Community, Chrome DevTools, Android SDK, and Google I/O 2026.',
+      credentialNote: 'me.developers.google.com/u/mrsarthak',
       verificationUrl: 'https://me.developers.google.com/u/mrsarthak',
     },
     {
       id: 'cert-class-10',
-      title: 'Class 10 Board Certified',
-      issuer: 'Secondary Board · Kolkata',
+      title: 'Class 10 Board Certification',
+      issuer: 'Hirendra Leela Patranavis School · Kolkata',
       category: 'academics',
       categoryLabel: 'Academics',
       period: 'Now Class 12 CS',
       summary:
-        'Completed Class 10 board certification and now studying Class 12 Computer Science alongside shipping web and AI projects.',
-      credentialNote: 'Verified academic milestone',
+        'Completed Class 10 board certification and currently pursuing Class 12 Computer Science alongside building web and AI projects.',
+      credentialNote: 'Academic milestone',
     },
     {
       id: 'cert-karate',
@@ -257,8 +321,8 @@ export const PROFILE_DATA: ProfileData = {
       categoryLabel: 'Sports',
       period: 'Certified',
       summary:
-        'Trained and certified in Karate — sharp focus, discipline, and staying calm under pressure.',
-      credentialNote: 'Martial arts certificate',
+        'Trained and certified in Karate, building focus, consistency, and composure.',
+      credentialNote: 'Martial arts credential',
     },
     {
       id: 'cert-swimming',
@@ -268,21 +332,27 @@ export const PROFILE_DATA: ProfileData = {
       categoryLabel: 'Sports',
       period: 'Certified',
       summary:
-        'Certified swimmer with endurance training outside of coding and tech.',
-      credentialNote: 'Athletic certificate',
+        'Certified swimmer trained in endurance and athletic discipline outside engineering.',
+      credentialNote: 'Aquatics credential',
     },
   ],
   about: {
-    lead: 'Sarthak Basu is a Google Developer and Microsoft event attendee based in Kolkata who loves building fast web apps, AI workflows, and active online communities.',
+    lead: 'Sarthak Basu is a Full-Stack Web & AI Developer from Kolkata, currently studying Class 12 Computer Science at Hirendra Leela Patranavis School.',
     paragraphs: [
-      'He works across Java, Python, JavaScript, Spring Boot, Gemini API, ADK, Firebase, and Supabase — balancing real-world dev builds with Class 12 Computer Science, Karate, and Swimming.',
+      'He builds responsive web apps, real-time backends, and AI agent workflows using Java, Python, JavaScript, Spring Boot, Gemini API, Agent Development Kit (ADK), Firebase, and Supabase.',
+      'Beyond code, Sarthak founded and ran the 3,000+ member Friends Fun SMP community and holds certifications in AI workshops, Karate, and Swimming.',
     ],
   },
   keyDetails: [
     {
-      label: 'Primary Focus',
-      value: 'Google Developer · Web & AI Builder',
-      context: 'Kolkata, India · Microsoft Event Attendee',
+      label: 'Role',
+      value: 'Full-Stack Web & AI Developer',
+      context: 'Kolkata, India · Remote Collaborations',
+    },
+    {
+      label: 'School',
+      value: 'Hirendra Leela Patranavis School',
+      context: 'Class 12 Computer Science (Class 10 Certified)',
     },
     {
       label: 'Community',
@@ -290,34 +360,29 @@ export const PROFILE_DATA: ProfileData = {
       context: 'friendsfunsmp.wixsite.com/friendsfun',
     },
     {
-      label: 'Education',
-      value: 'Class 12 Computer Science',
-      context: 'Class 10 Certified',
-    },
-    {
       label: 'Email',
       value: '26sarthakbasu@gmail.com',
-      context: 'Direct contact for collabs',
+      context: 'Direct contact',
     },
   ],
   googleDev: {
     handle: 'me.developers.google.com/u/mrsarthak',
     url: 'https://me.developers.google.com/u/mrsarthak',
-    headline: 'Google Developers',
+    headline: 'Google Builders Hub',
     summary:
-      'Verified Google Builders Hub profile with Firebase Studio, Chrome DevTools, Android SDK, and Google Developer Program badges.',
+      'Public developer profile showcasing Firebase Studio Developer Community, Chrome DevTools, Android SDK, and Google Developer Program Premium Tier badges.',
     badges: [
       {
         id: 'gbadge-ai',
         title: 'Gemini API, Google AI Studio & ADK',
-        issuer: 'Google Developers · mrsarthak',
+        issuer: 'Google Builders Hub · mrsarthak',
         category: 'AI & Agents',
-        summary: 'AI workflows with Gemini API, ADK, Opal, and Jules.',
+        summary: 'AI workflows built with Gemini API, ADK, Opal, and Jules.',
         year: '2026',
       },
       {
         id: 'gbadge-cloud',
-        title: 'Firebase Studio & Google Developer Program',
+        title: 'Firebase Studio & Developer Program Badges',
         issuer: 'Google Builders Hub',
         category: 'Web & Cloud',
         summary: 'Firebase Studio Community, Chrome DevTools, Android SDK & Premium Tier.',
@@ -331,9 +396,9 @@ export const PROFILE_DATA: ProfileData = {
       id: 'skill-ai-agents',
       index: '01',
       category: 'AI & Agents',
-      title: 'AI Agents & Workflows',
+      title: 'AI Agents & Automated Workflows',
       summary:
-        'Builds LLM-powered tools and custom agent workflows with ADK, Gemini API, Google AI Studio, Opal, and Jules.',
+        'Builds LLM-powered features and custom agentic workflows using Agent Development Kit (ADK), Gemini API, Google AI Studio, Opal, and Jules.',
       impactMetric: 'ADK · Gemini API · AI Studio',
       keywords: ['Agent Development Kit (ADK)', 'Gemini API', 'Google AI Studio', 'Opal', 'Jules'],
     },
@@ -341,9 +406,9 @@ export const PROFILE_DATA: ProfileData = {
       id: 'skill-fullstack-realtime',
       index: '02',
       category: 'Full-Stack Web',
-      title: 'Full-Stack Web Apps',
+      title: 'Full-Stack & Real-Time Web Apps',
       summary:
-        'Creates responsive, real-time web apps shipped on GitHub Pages and Netlify.',
+        'Ships responsive, real-time web applications hosted across GitHub Pages, Netlify, and cloud platforms.',
       impactMetric: 'HTML · CSS · JS · React',
       keywords: ['Full-Stack Web', 'HTML', 'CSS', 'JavaScript', 'GitHub Pages', 'Netlify'],
     },
@@ -351,19 +416,19 @@ export const PROFILE_DATA: ProfileData = {
       id: 'skill-uiux-frontend',
       index: '03',
       category: 'UI/UX Engineering',
-      title: 'UI/UX & Smooth Motion',
+      title: 'High-Craft UI/UX & Motion',
       summary:
-        'Designs bold dark-mode interfaces, fluid animations, and crisp CapCut edits.',
-      impactMetric: 'UI/UX · Motion · CapCut',
+        'Crafts clean dark interfaces, smooth micro-animations, interactive 3D elements, and CapCut media edits.',
+      impactMetric: 'UI/UX · Motion · 3D · CapCut',
       keywords: ['UI/UX Prototyping', 'Micro-Animations', 'CapCut Video Editing'],
     },
     {
       id: 'skill-backend-cloud',
       index: '04',
       category: 'Backend & Cloud',
-      title: 'Backend & Cloud Systems',
+      title: 'Backend & Cloud Integration',
       summary:
-        'Connects apps to Spring Boot, Java, Python, Firebase, Supabase, and Google Cloud.',
+        'Connects clean frontends to scalable databases and backends using Java, Python, Spring Boot, Firebase, Supabase, and Google Cloud.',
       impactMetric: 'Spring Boot · Firebase · Supabase',
       keywords: ['Spring Boot', 'Java', 'Python', 'Firebase Realtime Database', 'Supabase'],
     },
@@ -374,43 +439,43 @@ export const PROFILE_DATA: ProfileData = {
       index: '01',
       category: 'Languages & Frameworks',
       tools: ['Java', 'Python', 'HTML', 'CSS', 'JavaScript', 'Spring Boot'],
-      note: 'Core code & backends.',
+      note: 'Core engineering & APIs.',
     },
     {
       id: 'stack-ai',
       index: '02',
       category: 'AI & Agentic Tools',
       tools: ['Gemini API', 'Google AI Studio', 'Agent Development Kit (ADK)', 'Cursor', 'Opal', 'Jules'],
-      note: 'AI tools & agents.',
+      note: 'LLMs & agent workflows.',
     },
     {
       id: 'stack-backend',
       index: '03',
       category: 'Cloud & Databases',
       tools: ['Firebase', 'Supabase', 'Google Cloud', 'GitHub Pages', 'Netlify'],
-      note: 'Real-time data & hosting.',
+      note: 'Realtime data & hosting.',
     },
     {
       id: 'stack-design',
       index: '04',
       category: 'Design & Media',
-      tools: ['UI/UX', 'Motion', 'CapCut'],
-      note: 'Interfaces & edits.',
+      tools: ['UI/UX Prototyping', 'Micro-Animations', 'CapCut Video Editing'],
+      note: 'Interface craft & media.',
     },
   ],
   instagramPreview: {
     handle: '@mr_the_sarthak',
     displayName: 'Sarthak Basu',
     url: 'https://www.instagram.com/mr_the_sarthak/',
-    bioLines: ['Google Developer · Microsoft Attendee · Friends Fun SMP'],
+    bioLines: ['Full-Stack Web & AI Developer · Friends Fun SMP · Kolkata'],
   },
   faqs: [
     {
       id: 'faq-who',
       question: 'Who is Sarthak Basu?',
       answer:
-        'Sarthak Basu (@mr_the_sarthak) is a Google Developer, Microsoft event attendee, and web & AI builder from Kolkata. He founded the 3,000+ member Friends Fun SMP community and studies Class 12 CS.',
-      keywords: ['who is', 'sarthak basu', 'google developer', 'microsoft', 'kolkata', 'class 12'],
+        'Sarthak Basu (@mr_the_sarthak) is a Full-Stack Web & AI Developer and Class 12 Computer Science student at Hirendra Leela Patranavis School in Kolkata, India.',
+      keywords: ['who is', 'sarthak basu', 'developer', 'hirendra', 'kolkata', 'class 12'],
     },
     {
       id: 'faq-friends-fun',
@@ -421,10 +486,10 @@ export const PROFILE_DATA: ProfileData = {
     },
     {
       id: 'faq-certificates',
-      question: 'What badges and certificates does Sarthak hold?',
+      question: 'What verified certificates and badges does Sarthak hold?',
       answer:
-        'Sarthak holds verified Google Developer badges (me.developers.google.com/u/mrsarthak), attended Microsoft developer events, completed Class 10 boards, and is certified in Karate and Swimming.',
-      keywords: ['certificates', 'microsoft', 'karate', 'swimming', 'class 10', 'google badges'],
+        'Sarthak holds verified certificates from BSERC National Space Day 2026 AI Workshop, CampusCrew & Unstop QuizOff 2026, Google Gemini QuizOff 2026, a verified Credly badge, Google Builders Hub badges, Class 10 boards, Karate, and Swimming.',
+      keywords: ['certificates', 'bserc', 'unstop', 'campuscrew', 'credly', 'karate', 'swimming', 'class 10'],
     },
   ],
   socials: {
@@ -433,28 +498,28 @@ export const PROFILE_DATA: ProfileData = {
       handle: '@mr_the_sarthak',
       url: 'https://www.instagram.com/mr_the_sarthak/',
       enabled: true,
-      description: 'Direct updates & DMs',
+      description: 'Direct updates & messages',
     },
     github: {
       label: 'GitHub',
       handle: '@sarthakariya',
       url: 'https://github.com/sarthakariya',
       enabled: true,
-      description: 'Repos & 255+ contributions',
+      description: 'Repositories & 255+ contributions',
     },
     googleDev: {
-      label: 'Google Developers',
+      label: 'Google Builders Hub',
       handle: 'u/mrsarthak',
       url: 'https://me.developers.google.com/u/mrsarthak',
       enabled: true,
-      description: 'Verified Google Builders Hub badges',
+      description: 'Public developer community badges',
     },
     friendsFun: {
       label: 'Friends Fun SMP',
       handle: 'friendsfunsmp',
       url: 'https://friendsfunsmp.wixsite.com/friendsfun',
       enabled: true,
-      description: '3,000+ member community website',
+      description: '3,000+ member community portal',
     },
     linkedin: {
       label: 'LinkedIn',
@@ -466,12 +531,14 @@ export const PROFILE_DATA: ProfileData = {
   },
   seoKeywords: [
     'Sarthak Basu',
-    'Google Developer',
-    'Microsoft Developer Event Attendee',
     'Full-Stack Web & AI Developer',
+    'Hirendra Leela Patranavis School',
     'Friends Fun SMP Founder',
     'Class 12 Computer Science',
     'Kolkata, India',
+    'BSERC Artificial Intelligence Workshop',
+    'CampusCrew QuizOff 2026',
+    'Credly Verified Badge',
     'Agent Development Kit (ADK)',
     'Gemini API',
     'Spring Boot',
@@ -480,5 +547,5 @@ export const PROFILE_DATA: ProfileData = {
     'Karate',
     'Swimming',
   ],
-  suggestedQueries: ['Friends Fun SMP', 'Google & Microsoft', 'Certificates', 'GitHub', 'ADK & AI'],
+  suggestedQueries: ['BSERC AI', 'Credly Badge', 'QuizOff 2026', 'Friends Fun SMP', 'GitHub'],
 };

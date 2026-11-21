@@ -85,7 +85,7 @@ export function PersonalSearchSection({
                 type="search"
                 value={query}
                 onChange={(event) => onQueryChange(event.target.value)}
-                placeholder="Search Sarthak — Google, Microsoft, Friends Fun SMP, Karate, GitHub..."
+                placeholder="Search Sarthak — BSERC AI, QuizOff, Credly, Friends Fun SMP, GitHub..."
                 className="w-full bg-transparent px-3 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none"
               />
               {query && (

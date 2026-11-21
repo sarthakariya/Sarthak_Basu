@@ -1,8 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'motion/react';
-import { ArrowUpRight, Check, Copy, MapPin } from 'lucide-react';
+import {
+  ArrowRight,
+  Award,
+  Check,
+  Copy,
+  Globe,
+  MapPin,
+  User,
+} from 'lucide-react';
 import type { ProfileData, StatMetric } from '../data/profileData';
+import type { PageRoute } from '../utils/router';
 import sarthakPortrait from '../assets/sarthak-basu.jpg';
+import { ThreeHeroScene } from './ThreeHeroScene';
 import {
   ITEM_STAGGER_VARIANTS,
   SECTION_STAGGER_VARIANTS,
@@ -13,6 +23,7 @@ import {
 
 interface HeroSectionProps {
   profile: ProfileData;
+  onNavigate: (route: PageRoute) => void;
 }
 
 const STAT_THEMES: Array<{
@@ -52,7 +63,7 @@ function AnimatedCounter({ target, suffix }: { target: number; suffix: string })
       return;
     }
 
-    const duration = 820;
+    const duration = 760;
     const startTime = performance.now();
     let frameId = 0;
 
@@ -95,9 +106,9 @@ function CyclingRoleText({ roles }: { roles: string[] }) {
     let timeoutId: number;
 
     if (!isDeleting && charCount < currentRole.length) {
-      timeoutId = window.setTimeout(() => setCharCount((c) => c + 1), 40);
+      timeoutId = window.setTimeout(() => setCharCount((c) => c + 1), 38);
     } else if (!isDeleting && charCount === currentRole.length) {
-      timeoutId = window.setTimeout(() => setIsDeleting(true), 2200);
+      timeoutId = window.setTimeout(() => setIsDeleting(true), 2300);
     } else if (isDeleting && charCount > 0) {
       timeoutId = window.setTimeout(() => setCharCount((c) => c - 1), 22);
     } else {
@@ -111,17 +122,17 @@ function CyclingRoleText({ roles }: { roles: string[] }) {
   const displayed = (roles[roleIndex] ?? '').slice(0, charCount);
 
   return (
-    <span className="inline-flex items-center font-mono text-xs font-medium text-sky-300 sm:text-sm">
+    <span className="inline-flex items-center font-mono text-xs font-medium text-sky-300 sm:text-[13px]">
       <span>{displayed}</span>
       <span
         aria-hidden="true"
-        className="ml-1 inline-block h-4 w-[2px] animate-pulse bg-violet-400"
+        className="ml-1 inline-block h-3.5 w-[2px] bg-violet-400"
       />
     </span>
   );
 }
 
-export function HeroSection({ profile }: HeroSectionProps) {
+export function HeroSection({ profile, onNavigate }: HeroSectionProps) {
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   async function handleCopyEmail() {
@@ -137,130 +148,87 @@ export function HeroSection({ profile }: HeroSectionProps) {
   return (
     <motion.section
       id="top"
-      aria-label="Sarthak Basu overview"
+      aria-label="Sarthak Basu Home"
       variants={SECTION_STAGGER_VARIANTS}
       initial="hidden"
       whileInView="visible"
       viewport={VIEWPORT_CONFIG}
-      className="space-y-4"
+      className="space-y-6"
     >
-      {/* Centered Multi-Color Hero Island */}
-      <SpotlightIsland
-        accent="multi"
-        tilt
-        staggerChild
-        className="tech-grid-bg p-6 sm:p-8 lg:p-9"
-      >
-        {/* Multi-color soft aurora ambiance */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -top-24 left-1/4 h-56 w-56 rounded-full bg-sky-500/15 blur-3xl"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-12 -bottom-24 h-60 w-60 rounded-full bg-violet-500/15 blur-3xl"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 -left-16 h-44 w-44 rounded-full bg-emerald-500/12 blur-3xl"
-        />
+      {/* Clean Split Hero: Glassmorphic Identity Card + Interactive Three.js 3D Artifact */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-12 lg:items-stretch">
+        <SpotlightIsland
+          accent="multi"
+          staggerChild
+          className="tech-grid-bg flex flex-col justify-between p-6 sm:p-7 lg:col-span-6"
+        >
+          <div className="relative z-10">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold tracking-[0.14em] text-sky-300 uppercase">
+                  <MapPin className="h-3 w-3 text-emerald-300" />
+                  <span>{profile.location}</span>
+                </p>
+                <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
+                  <span className="bg-gradient-to-r from-white via-sky-100 to-violet-200 bg-clip-text text-transparent">
+                    {profile.fullName}
+                  </span>
+                </h1>
+              </div>
 
-        <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center text-center">
-          {/* Passport-Proportioned Real Portrait with Multi-Color Luminous Ring */}
-          <motion.div
-            variants={ITEM_STAGGER_VARIANTS}
-            whileHover={{ scale: 1.04, rotate: 0.8 }}
-            transition={{ type: 'spring', stiffness: 320, damping: 20 }}
-            className="mb-4 rounded-2xl bg-gradient-to-br from-sky-400 via-violet-400 to-emerald-400 p-[2px] shadow-[0_0_32px_-6px_rgba(167,139,250,0.5)]"
-          >
-            <div className="h-24 w-24 overflow-hidden rounded-[14px] bg-[#06070D] sm:h-28 sm:w-28">
-              <img
-                src={sarthakPortrait}
-                alt={profile.portraitAlt}
-                width={112}
-                height={112}
-                className="h-full w-full object-cover object-top"
-              />
+              {/* Crisp Passport-Framed Portrait on the right of name */}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: 'spring', stiffness: 320, damping: 20 }}
+                className="shrink-0 rounded-2xl bg-gradient-to-br from-sky-400 via-violet-400 to-emerald-400 p-[2px] shadow-[0_0_28px_-6px_rgba(56,189,248,0.55)]"
+              >
+                <div className="h-20 w-20 overflow-hidden rounded-[14px] bg-[#06070D] sm:h-24 sm:w-24">
+                  <img
+                    src={sarthakPortrait}
+                    alt={profile.portraitAlt}
+                    width={96}
+                    height={96}
+                    className="h-full w-full object-cover object-top"
+                  />
+                </div>
+              </motion.div>
             </div>
-          </motion.div>
 
-          {/* Clean Unboxed Multi-Color Kicker */}
-          <motion.p
-            variants={ITEM_STAGGER_VARIANTS}
-            className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 font-mono text-[11px] font-semibold tracking-[0.14em] uppercase"
-          >
-            <span className="text-sky-300">Google Developer</span>
-            <span className="text-slate-600">·</span>
-            <span className="text-violet-300">Microsoft Event Attendee</span>
-            <span className="text-slate-600">·</span>
-            <span className="inline-flex items-center gap-1 text-emerald-300">
-              <MapPin className="h-3 w-3" />
-              {profile.location}
-            </span>
-          </motion.p>
+            <div className="mt-3 min-h-[1.4rem]">
+              <CyclingRoleText roles={profile.cyclingRoles} />
+            </div>
 
-          {/* Main Name */}
-          <motion.h1
-            variants={ITEM_STAGGER_VARIANTS}
-            className="mt-2.5 font-display text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-[54px] lg:leading-[1.05]"
-          >
-            <span className="bg-gradient-to-r from-white via-sky-100 to-violet-200 bg-clip-text text-transparent">
-              {profile.fullName}
-            </span>
-          </motion.h1>
+            <p className="mt-3 text-sm leading-relaxed text-slate-300 sm:text-[15px]">
+              {profile.tagline}
+            </p>
+          </div>
 
-          {/* Smooth Typewriter Role Line */}
-          <motion.div variants={ITEM_STAGGER_VARIANTS} className="mt-2.5 min-h-[1.5rem]">
-            <CyclingRoleText roles={profile.cyclingRoles} />
-          </motion.div>
-
-          {/* Concise Casual 3rd-Person Intro */}
-          <motion.p
-            variants={ITEM_STAGGER_VARIANTS}
-            className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-[15.5px]"
-          >
-            {profile.tagline}
-          </motion.p>
-
-          {/* Centered Action Row */}
-          <motion.div
-            variants={ITEM_STAGGER_VARIANTS}
-            className="mt-5 flex flex-wrap items-center justify-center gap-2.5"
-          >
+          <div className="relative z-10 mt-6 flex flex-wrap items-center gap-2.5 pt-2">
             <motion.a
-              href={profile.socials.googleDev.url}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#/certificates"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('certificates');
+              }}
               whileHover={{ y: -2, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-sky-400 via-indigo-400 to-violet-400 px-4 py-2 text-xs font-bold text-[#06070D] shadow-[0_8px_24px_-8px_rgba(56,189,248,0.65)] transition-all hover:brightness-110 sm:text-[13px]"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-sky-400 via-indigo-400 to-violet-400 px-4 py-2.5 text-xs font-bold text-[#06070D] shadow-[0_10px_28px_-10px_rgba(56,189,248,0.7)] transition-all hover:brightness-110 sm:text-[13px]"
             >
-              Google Dev Profile
-              <ArrowUpRight className="h-3.5 w-3.5" />
+              Certificates &amp; Badges
+              <ArrowRight className="h-3.5 w-3.5" />
             </motion.a>
 
             <motion.a
-              href={profile.socials.github.url}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#/about"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('about');
+              }}
               whileHover={{ y: -2, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-violet-400/35 bg-violet-400/10 px-4 py-2 text-xs font-semibold text-violet-100 transition-colors hover:border-violet-300/60 hover:bg-violet-400/20 sm:text-[13px]"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.14] bg-white/[0.05] px-4 py-2.5 text-xs font-semibold text-slate-100 transition-colors hover:border-violet-400/50 hover:bg-violet-400/10 sm:text-[13px]"
             >
-              GitHub
-              <ArrowUpRight className="h-3.5 w-3.5 text-violet-300" />
-            </motion.a>
-
-            <motion.a
-              href={profile.socials.friendsFun.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ y: -2, scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-400/35 bg-emerald-400/10 px-4 py-2 text-xs font-semibold text-emerald-100 transition-colors hover:border-emerald-300/60 hover:bg-emerald-400/20 sm:text-[13px]"
-            >
-              Friends Fun SMP
-              <ArrowUpRight className="h-3.5 w-3.5 text-emerald-300" />
+              About Sarthak
             </motion.a>
 
             <motion.button
@@ -268,25 +236,30 @@ export function HeroSection({ profile }: HeroSectionProps) {
               onClick={handleCopyEmail}
               whileHover={{ y: -2, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-white/[0.12] bg-white/[0.04] px-3.5 py-2 text-xs font-semibold text-slate-200 transition-colors hover:border-amber-400/45 hover:bg-amber-400/10 hover:text-amber-100 sm:text-[13px]"
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-white/[0.12] bg-white/[0.04] px-3.5 py-2.5 text-xs font-semibold text-slate-200 transition-colors hover:border-amber-400/45 hover:bg-amber-400/10 hover:text-amber-100"
             >
               {copiedEmail ? (
                 <>
                   <Check className="h-3.5 w-3.5 text-emerald-400" />
-                  Email Copied
+                  Copied
                 </>
               ) : (
                 <>
                   <Copy className="h-3.5 w-3.5 text-amber-300" />
-                  Copy Email
+                  Email
                 </>
               )}
             </motion.button>
-          </motion.div>
-        </div>
-      </SpotlightIsland>
+          </div>
+        </SpotlightIsland>
 
-      {/* Centered 3-Column Animated Count-Up Stat Row */}
+        {/* Dedicated Three.js 3D Interactive Studio Showcase */}
+        <motion.div variants={ITEM_STAGGER_VARIANTS} className="lg:col-span-6">
+          <ThreeHeroScene className="h-full" />
+        </motion.div>
+      </div>
+
+      {/* 3 Magnetic Glassmorphic Stat Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {profile.stats.map((stat: StatMetric, index: number) => {
           const theme = STAT_THEMES[index % STAT_THEMES.length];
@@ -294,22 +267,119 @@ export function HeroSection({ profile }: HeroSectionProps) {
             <SpotlightIsland
               key={stat.id}
               accent={theme.accent}
-              tilt
               staggerChild
-              className="p-4 text-center sm:p-5"
+              className="p-5 text-center"
             >
               <p
                 className={`bg-gradient-to-r bg-clip-text font-display text-3xl font-extrabold tracking-tight text-transparent sm:text-[34px] ${theme.valueGradient}`}
               >
                 <AnimatedCounter target={stat.target} suffix={stat.suffix} />
               </p>
-              <p className={`mt-1 text-xs font-bold uppercase tracking-wider ${theme.labelColor}`}>
+              <p
+                className={`mt-1 text-xs font-bold uppercase tracking-wider ${theme.labelColor}`}
+              >
                 {stat.label}
               </p>
               <p className="mt-0.5 text-xs text-slate-400">{stat.detail}</p>
             </SpotlightIsland>
           );
         })}
+      </div>
+
+      {/* Clean Page Directory Cards (Separate Multi-Page Links) */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <a
+          href="#/about"
+          onClick={(e) => {
+            e.preventDefault();
+            onNavigate('about');
+          }}
+          className="block focus:outline-none"
+        >
+          <SpotlightIsland
+            accent="violet"
+            staggerChild
+            className="flex h-full flex-col justify-between p-5"
+          >
+            <div>
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-400/15 text-violet-300 ring-1 ring-violet-400/30">
+                <User className="h-4 w-4" />
+              </span>
+              <h2 className="mt-3 font-display text-lg font-bold text-white">
+                About &amp; Community
+              </h2>
+              <p className="mt-1.5 text-xs leading-relaxed text-slate-400">
+                Background at Hirendra Leela Patranavis School, core tech stack, and Friends Fun SMP (3,000+ members).
+              </p>
+            </div>
+            <span className="mt-4 inline-flex items-center gap-1 font-mono text-xs font-semibold text-violet-300 transition-transform group-hover:translate-x-1">
+              Open About Page
+              <ArrowRight className="h-3.5 w-3.5" />
+            </span>
+          </SpotlightIsland>
+        </a>
+
+        <a
+          href="#/certificates"
+          onClick={(e) => {
+            e.preventDefault();
+            onNavigate('certificates');
+          }}
+          className="block focus:outline-none"
+        >
+          <SpotlightIsland
+            accent="amber"
+            staggerChild
+            className="flex h-full flex-col justify-between p-5"
+          >
+            <div>
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-400/15 text-amber-300 ring-1 ring-amber-400/30">
+                <Award className="h-4 w-4" />
+              </span>
+              <h2 className="mt-3 font-display text-lg font-bold text-white">
+                Certificates &amp; Badges
+              </h2>
+              <p className="mt-1.5 text-xs leading-relaxed text-slate-400">
+                BSERC National Space Day AI, CampusCrew &amp; Unstop QuizOff 2026, live Credly badge, Karate &amp; Swimming.
+              </p>
+            </div>
+            <span className="mt-4 inline-flex items-center gap-1 font-mono text-xs font-semibold text-amber-300 transition-transform group-hover:translate-x-1">
+              View All Certificates
+              <ArrowRight className="h-3.5 w-3.5" />
+            </span>
+          </SpotlightIsland>
+        </a>
+
+        <a
+          href="#/profiles"
+          onClick={(e) => {
+            e.preventDefault();
+            onNavigate('profiles');
+          }}
+          className="block focus:outline-none"
+        >
+          <SpotlightIsland
+            accent="sky"
+            staggerChild
+            className="flex h-full flex-col justify-between p-5"
+          >
+            <div>
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-400/15 text-sky-300 ring-1 ring-sky-400/30">
+                <Globe className="h-4 w-4" />
+              </span>
+              <h2 className="mt-3 font-display text-lg font-bold text-white">
+                Profiles &amp; Contact
+              </h2>
+              <p className="mt-1.5 text-xs leading-relaxed text-slate-400">
+                Verified GitHub (@sarthakariya), Google Builders Hub, Instagram (@mr_the_sarthak), and direct email.
+              </p>
+            </div>
+            <span className="mt-4 inline-flex items-center gap-1 font-mono text-xs font-semibold text-sky-300 transition-transform group-hover:translate-x-1">
+              Explore Profiles
+              <ArrowRight className="h-3.5 w-3.5" />
+            </span>
+          </SpotlightIsland>
+        </a>
       </div>
     </motion.section>
   );
